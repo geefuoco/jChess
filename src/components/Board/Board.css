@@ -1,0 +1,8 @@
+.board-row{
+  display: flex;
+}
+
+.piece{
+  width: 80px;
+  height: 80px;
+}
