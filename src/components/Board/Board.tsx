@@ -4,33 +4,10 @@ import Cell from "../Cell/Cell";
 
 const Board: React.FC = () => {
   const sideLength = 8;
+  // Need to implement a virtual board
+  //Virtual board can be set as state
 
-  const createRow = (index: number): JSX.Element => {
-    const row: JSX.Element[] = [];
-    for (let i = 0; i < sideLength; i++) {
-      const move = (index & 1) + i;
-      row.push(<Cell light={(move & 1) === 0} key={`${i},${index}`} />);
-    }
-    return (
-      <div key={index} className="board-row">
-        {row}
-      </div>
-    );
-  };
-
-  const createStartingBoard = () => {
-    const board: JSX.Element[] = [];
-    for (let i = 0; i < sideLength; i++) {
-      board.push(createRow(i));
-    }
-    return board;
-  };
-
-  return (
-    <div data-testid="board" className="board">
-      {createStartingBoard()}
-    </div>
-  );
+  return <div data-testid="board" className="board"></div>;
 };
 
 export default Board;
