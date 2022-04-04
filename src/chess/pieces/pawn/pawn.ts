@@ -5,10 +5,11 @@ import { ChessBoard } from "../../board/chessboard";
 
 export class Pawn extends Piece {
   passable: boolean;
+  firstMove: boolean;
   direction: number;
-  static MOVE_SET = [1, 0];
-  static SPECIAL_MOVE = [2, 0];
-  static CAPTURE_MOVES = [
+  static MOVE_SET = [
+    [1, 0],
+    [2, 0],
     [1, 1],
     [1, -1]
   ];
@@ -16,6 +17,7 @@ export class Pawn extends Piece {
   constructor(board: ChessBoard, color: string, position: Position) {
     super(board, color, position);
     this.passable = false;
+    this.firstMove = true;
     this.direction = this.color === "white" ? -1 : 1;
   }
 
@@ -32,33 +34,42 @@ export class Pawn extends Piece {
     if (move.isSpecial()) {
       this.passable = true;
     }
+    this.firstMove = false;
   }
 
-  getMoveSet(): Move[] {
-    let moves: Move[] = [];
-    moves.push(this.generateMove(Pawn.MOVE_SET));
-    if (!this.hasMoved) {
-      moves.push(this.generateMove(Pawn.SPECIAL_MOVE, true));
-    }
-    moves = moves
-      .concat(this.generateCaptureMoves())
-      .filter((move) => move.validMove());
-    return moves;
-  }
-
-  private generateMove(moveSet: number[], special = false): Move {
-    const { x, y } = this.position;
-    const rankOffset = x + moveSet[0] * this.direction;
-    const fileOffset = y + moveSet[1] * this.direction;
-    const move = new Move({ x: rankOffset, y: fileOffset }, special);
-    return move;
-  }
-
-  private generateCaptureMoves(): Move[] {
+  generateMoveSet(): Move[] {
     const moves: Move[] = [];
-    Pawn.CAPTURE_MOVES.forEach((move) => {
-      moves.push(this.generateMove(move));
+    const normalMoveset = Pawn.MOVE_SET[0];
+    const specialMoveset = Pawn.MOVE_SET[1];
+    const captureMoveset = Pawn.MOVE_SET.slice(2);
+
+    let position = {
+      x: this.position.x + normalMoveset[0] * this.direction,
+      y: this.position.y + normalMoveset[1]
+    };
+
+    if (!this.outsideOfBoard(position)) {
+      moves.push(this.createMove(position));
+    }
+
+    if (this.firstMove) {
+      position = {
+        x: this.position.x + specialMoveset[0] * this.direction,
+        y: this.position.y + specialMoveset[1]
+      };
+      moves.push(new Move(position, true));
+    }
+
+    captureMoveset.forEach((moveset) => {
+      position = {
+        x: this.position.x + moveset[0] * this.direction,
+        y: this.position.y + moveset[1]
+      };
+      if (!this.outsideOfBoard(position) && this.hasEnemyPiece(position)) {
+        moves.push(this.createMove(position));
+      }
     });
+
     return moves;
   }
 }

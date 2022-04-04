@@ -5,11 +5,13 @@ import { ChessBoard } from "../../board/chessboard";
 describe("Pawn", () => {
   let p: Pawn;
   let P: Pawn;
+  let board: ChessBoard;
   beforeEach(() => {
-    //B pawn
-    const board = new ChessBoard();
+    board = new ChessBoard();
     p = new Pawn(board, "black", { x: 1, y: 1 });
     P = new Pawn(board, "white", { x: 6, y: 1 });
+    board.setSquare(p.getPosition(), p);
+    board.setSquare(P.getPosition(), P);
   });
 
   it("should update its position when moved", () => {
@@ -31,7 +33,7 @@ describe("Pawn", () => {
   it("should generate valid moves only", () => {
     const firstMove = new Move({ x: 5, y: 1 });
     P.move(firstMove);
-    const moves = P.getMoveSet();
+    const moves = P.generateMoveSet();
 
     let specialCount = 0;
     let boundsCount = 0;
@@ -50,6 +52,13 @@ describe("Pawn", () => {
     });
     expect(specialCount).toBe(0);
     expect(boundsCount).toBe(0);
+    expect(moves.length).toBe(1);
+  });
+
+  it("should show capture moves when a piece is on a capturable square", () => {
+    const enemy = new Pawn(board, "black", { x: 5, y: 0 });
+    board.setSquare(enemy.getPosition(), enemy);
+    const moves = P.generateMoveSet();
     expect(moves.length).toBe(3);
   });
 });
