@@ -26,15 +26,11 @@ export class SlidingPiece extends Piece {
     moves: Move[]
   ) {
     while (!this.outsideOfBoard(newPosition)) {
-      moves.push(new Move(newPosition));
+      moves.push(this.createMove(newPosition));
       if (this.hasPiece(newPosition)) break;
       const rankOffset = moveSet[0] + newPosition.x;
       const fileOffset = moveSet[1] + newPosition.y;
       newPosition = { x: rankOffset, y: fileOffset };
     }
-  }
-
-  private outsideOfBoard(position: Position): boolean {
-    return position.x < 0 || position.x > 7 || position.y < 0 || position.y > 7;
   }
 }
