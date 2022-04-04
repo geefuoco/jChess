@@ -1,17 +1,15 @@
 import { ChessBoard } from "../board/chessboard";
 import { Position } from "../interfaces/position";
 import { Move } from "../moves/move";
+import { AbstractPieceMover } from "../moves/abstractPieceMover/abstractPieceMover";
 
-export class Piece {
-  protected color: string;
+export class Piece extends AbstractPieceMover {
   protected position: Position;
   protected hasMoved: boolean;
   protected legalMoves: Move[];
-  protected board: ChessBoard;
 
   constructor(board: ChessBoard, color: string, position: Position) {
-    this.board = board;
-    this.color = color;
+    super(board, color);
     this.position = position;
     this.hasMoved = false;
     this.legalMoves = [];
@@ -32,9 +30,5 @@ export class Piece {
 
   getLegalMoves(): Move[] {
     return this.legalMoves;
-  }
-
-  hasPiece(position: Position): boolean {
-    return this.board.hasPiece(position);
   }
 }
