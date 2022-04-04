@@ -11,6 +11,7 @@ import queenWhite from "../../assets/queen_white.png";
 import rookBlack from "../../assets/rook_black.png";
 import rookWhite from "../../assets/rook_white.png";
 import { Position } from "../interfaces/position";
+import { Piece } from "../pieces/piece";
 
 export const pieceMap = {
   k: kingBlack,
@@ -28,27 +29,35 @@ export const pieceMap = {
 };
 
 export class ChessBoard {
-  board: string[][];
+  board: (Piece | null)[][];
   constructor() {
     this.board = this.createChessBoard(8);
   }
 
-  private createChessBoard(sideLength: number): string[][] {
+  private createChessBoard(sideLength: number): (Piece | null)[][] {
     const board = [];
     for (let i = 0; i < sideLength; i++) {
-      board[i] = [] as string[];
+      board[i] = [] as (Piece | null)[];
       for (let j = 0; j < sideLength; j++) {
-        board[i].push("");
+        board[i].push(null);
       }
     }
     return board;
   }
 
-  getBoard(): string[][] {
+  getBoard(): (Piece | null)[][] {
     return this.board;
   }
 
   hasPiece(position: Position): boolean {
-    return this.board[position.x][position.y] !== "";
+    return this.board[position.x][position.y] !== null;
+  }
+
+  getSquare(position: Position): Piece | null {
+    return this.board[position.x][position.y];
+  }
+
+  setSquare(position: Position, piece: Piece) {
+    this.board[position.x][position.y] = piece;
   }
 }
