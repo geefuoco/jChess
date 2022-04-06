@@ -31,4 +31,23 @@ export class Piece extends AbstractPieceMover {
   getLegalMoves(): Move[] {
     return this.legalMoves;
   }
+
+  generateMoveSet(): Move[] {
+    const that = this; //eslint-disable-line
+    type childPiece = {
+      constructor: childPiece;
+      MOVE_SET: number[][];
+    } & typeof that;
+    const moves: Move[] = [];
+    (this as childPiece).constructor.MOVE_SET.forEach((moveSet) => {
+      const newPosition = {
+        x: moveSet[0] + this.position.x,
+        y: moveSet[1] + this.position.y
+      };
+      if (!this.outsideOfBoard(newPosition)) {
+        moves.push(this.createMove(newPosition));
+      }
+    });
+    return moves;
+  }
 }
