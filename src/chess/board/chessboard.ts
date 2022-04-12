@@ -60,4 +60,8 @@ export class ChessBoard {
   setSquare(position: Position, piece: Piece) {
     this.board[position.x][position.y] = piece;
   }
+
+  getPieces() {
+    return this.board.flat().filter((value) => value !== null);
+  }
 }
