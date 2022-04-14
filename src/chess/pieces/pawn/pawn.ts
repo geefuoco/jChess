@@ -5,7 +5,6 @@ import { ChessBoard } from "../../board/chessboard";
 
 export class Pawn extends Piece {
   passable: boolean;
-  firstMove: boolean;
   direction: number;
   static MOVE_SET = [
     [1, 0],
@@ -17,7 +16,6 @@ export class Pawn extends Piece {
   constructor(board: ChessBoard, color: string, position: Position) {
     super(board, color, position);
     this.passable = false;
-    this.firstMove = true;
     this.direction = this.color === "white" ? -1 : 1;
   }
 
@@ -34,7 +32,6 @@ export class Pawn extends Piece {
     if (move.isSpecial()) {
       this.passable = true;
     }
-    this.firstMove = false;
   }
 
   generateMoveSet(): Move[] {
@@ -52,7 +49,7 @@ export class Pawn extends Piece {
       moves.push(this.createMove(position));
     }
 
-    if (this.firstMove) {
+    if (!this.hasMoved) {
       position = {
         x: this.position.x + specialMoveset[0] * this.direction,
         y: this.position.y + specialMoveset[1]

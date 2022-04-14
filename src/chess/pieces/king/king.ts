@@ -27,4 +27,11 @@ export class King extends Piece {
   isChecked(): boolean {
     return this.inCheck;
   }
+
+  canCastle(rook: Piece): boolean {
+    if (rook.constructor.toString() !== "Rook") {
+      return false;
+    }
+    return !this.inCheck && !this.hasMoved && !rook.getHasMoved();
+  }
 }
