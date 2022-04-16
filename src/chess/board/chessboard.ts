@@ -57,11 +57,27 @@ export class ChessBoard {
     return this.board[position.x][position.y];
   }
 
-  setSquare(position: Position, piece: Piece) {
+  setSquare(position: Position, piece: Piece | null) {
     this.board[position.x][position.y] = piece;
   }
 
   getPieces() {
     return this.board.flat().filter((value) => value !== null);
+  }
+
+  move(piece: Piece, position: Position) {
+    const legalMoves = piece.getLegalMoves();
+    const move = legalMoves.filter(
+      (move) =>
+        JSON.stringify(move.getGoalPosition()) == JSON.stringify(position)
+    )[0];
+    if (move) {
+      const oldPos = piece.getPosition();
+      piece.move(move);
+      this.setSquare(oldPos, null);
+      this.setSquare(position, piece);
+    } else {
+      throw new Error(`Invalid move for ${piece.constructor}`);
+    }
   }
 }

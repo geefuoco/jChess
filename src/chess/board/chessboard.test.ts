@@ -1,26 +1,18 @@
+import { Pawn } from "../pieces/pawn/pawn";
 import { ChessBoard } from "./chessboard";
 
 describe("ChessBoard", () => {
   let board: ChessBoard;
   beforeEach(() => (board = new ChessBoard()));
 
-  it("should generate a starting board", () => {
-    const startingBoardPositions = [];
-    for (let i = 0; i < 2; i++) {
-      for (let j = 0; j < 8; j++) {
-        startingBoardPositions.push({ x: i, y: j });
-      }
-    }
+  it("should move the piece to the correct position", () => {
+    const position = { x: 1, y: 2 };
+    const p = new Pawn(board, "black", position);
+    board.setSquare(position, p);
+    const newPos = { x: 2, y: 2 };
 
-    for (let i = 6; i < 8; i++) {
-      for (let j = 0; j < 8; j++) {
-        startingBoardPositions.push({ x: i, y: j });
-      }
-    }
-
-    board.generateStartingBoard();
-    expect(board.getPieces().map((piece) => piece.getPosition())).toEqual(
-      expect.arrayContaining(startingBoardPositions)
-    );
+    board.move(p, newPos);
+    expect(board.getSquare(newPos)).toBe(p);
+    expect(board.getSquare(position)).toBeNull();
   });
 });
