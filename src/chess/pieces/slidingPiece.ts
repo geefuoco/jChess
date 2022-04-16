@@ -1,8 +1,13 @@
+import { ChessBoard } from "../board/chessboard";
 import { Position } from "../interfaces/position";
 import { Move } from "../moves/move";
 import { Piece } from "./piece";
 
 export class SlidingPiece extends Piece {
+  constructor(board: ChessBoard, color: string, position: Position) {
+    super(board, color, position);
+    this.legalMoves = this.generateMoveSet();
+  }
   generateMoveSet(): Move[] {
     const that = this; //eslint-disable-line
     type childPiece = {

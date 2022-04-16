@@ -17,6 +17,7 @@ export class Pawn extends Piece {
     super(board, color, position);
     this.passable = false;
     this.direction = this.color === "white" ? -1 : 1;
+    this.legalMoves = this.generateMoveSet();
   }
 
   setPassable(bool: boolean) {

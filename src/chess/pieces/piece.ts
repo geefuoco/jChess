@@ -18,6 +18,7 @@ export class Piece extends AbstractPieceMover {
   move(move: Move) {
     this.position = move.getGoalPosition();
     this.hasMoved = true;
+    this.legalMoves = this.generateMoveSet();
   }
 
   getPosition(): Position {

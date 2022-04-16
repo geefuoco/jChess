@@ -18,6 +18,7 @@ export class King extends Piece {
   constructor(board: ChessBoard, color: string, position: Position) {
     super(board, color, position);
     this.inCheck = false;
+    this.legalMoves = this.generateMoveSet();
   }
 
   setChecked(bool: boolean) {
