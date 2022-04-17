@@ -12,8 +12,9 @@ import rookBlack from "../../assets/rook_black.png";
 import rookWhite from "../../assets/rook_white.png";
 import { Position } from "../interfaces/position";
 import { Piece } from "../pieces/piece";
+import { Map } from "../interfaces/map";
 
-export const pieceMap = {
+export const pieceMap: Map = {
   k: kingBlack,
   K: kingWhite,
   b: bishopBlack,
