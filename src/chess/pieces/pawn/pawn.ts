@@ -70,4 +70,8 @@ export class Pawn extends Piece {
 
     return moves;
   }
+
+  getPieceCode(): string {
+    return this.color === "white" ? "P" : "p";
+  }
 }

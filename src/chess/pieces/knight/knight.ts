@@ -17,4 +17,7 @@ export class Knight extends Piece {
     [-1, 2],
     [-1, -2]
   ];
+  getPieceCode(): string {
+    return this.color === "white" ? "N" : "n";
+  }
 }

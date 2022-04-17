@@ -7,4 +7,7 @@ export class Rook extends SlidingPiece {
     [0, -1],
     [0, 1]
   ];
+  getPieceCode(): string {
+    return this.color === "white" ? "R" : "r";
+  }
 }

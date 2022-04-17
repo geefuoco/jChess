@@ -3,7 +3,7 @@ import { Position } from "../interfaces/position";
 import { Move } from "../moves/move";
 import { AbstractPieceMover } from "../moves/abstractPieceMover/abstractPieceMover";
 
-export class Piece extends AbstractPieceMover {
+export abstract class Piece extends AbstractPieceMover {
   protected position: Position;
   protected hasMoved: boolean;
   protected legalMoves: Move[];
@@ -51,4 +51,6 @@ export class Piece extends AbstractPieceMover {
     });
     return moves;
   }
+
+  abstract getPieceCode(): string;
 }

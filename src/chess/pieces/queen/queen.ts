@@ -11,4 +11,7 @@ export class Queen extends SlidingPiece {
     [-1, -1],
     [-1, 1]
   ];
+  getPieceCode(): string {
+    return this.color === "white" ? "Q" : "q";
+  }
 }

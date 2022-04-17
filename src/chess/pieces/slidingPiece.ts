@@ -3,7 +3,7 @@ import { Position } from "../interfaces/position";
 import { Move } from "../moves/move";
 import { Piece } from "./piece";
 
-export class SlidingPiece extends Piece {
+export abstract class SlidingPiece extends Piece {
   constructor(board: ChessBoard, color: string, position: Position) {
     super(board, color, position);
     this.legalMoves = this.generateMoveSet();

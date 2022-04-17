@@ -35,4 +35,7 @@ export class King extends Piece {
     }
     return !this.inCheck && !this.hasMoved && !rook.getHasMoved();
   }
+  getPieceCode(): string {
+    return this.color === "white" ? "K" : "k";
+  }
 }

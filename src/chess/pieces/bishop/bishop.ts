@@ -7,4 +7,8 @@ export class Bishop extends SlidingPiece {
     [1, 1],
     [1, -1]
   ];
+
+  getPieceCode(): string {
+    return this.color === "white" ? "B" : "b";
+  }
 }
