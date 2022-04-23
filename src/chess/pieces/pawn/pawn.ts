@@ -46,7 +46,7 @@ export class Pawn extends Piece {
       y: this.position.y + normalMoveset[1]
     };
 
-    if (!this.outsideOfBoard(position)) {
+    if (!this.outsideOfBoard(position) && !this.hasPiece(position)) {
       moves.push(this.createMove(position));
     }
 
