@@ -52,5 +52,13 @@ export abstract class Piece extends AbstractPieceMover {
     return moves;
   }
 
+  canMove(position: Position): boolean {
+    return (
+      this.legalMoves
+        .map((move) => JSON.stringify(move.getGoalPosition()))
+        .find((v) => v === JSON.stringify(position)) !== undefined
+    );
+  }
+
   abstract getPieceCode(): string;
 }
