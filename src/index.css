@@ -3,3 +3,15 @@
 *::after{
   box-sizing: border-box;
 }
+
+html{
+  color: wheat;
+  background-color: #1d1d1d;
+}
+
+.app{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
