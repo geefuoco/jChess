@@ -35,7 +35,7 @@ export abstract class SlidingPiece extends Piece {
       if (this.hasEnemyPiece(newPosition)) {
         moves.push(this.createMove(newPosition));
         break;
-      } else if (!this.hasPiece(newPosition)) {
+      } else if (!this.hasFriendlyPiece(newPosition)) {
         moves.push(this.createMove(newPosition));
         const rankOffset = moveSet[0] + newPosition.x;
         const fileOffset = moveSet[1] + newPosition.y;

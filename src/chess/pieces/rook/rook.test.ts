@@ -77,4 +77,12 @@ describe("Rook", () => {
     const moveSet = rook.generateMoveSet();
     expect(moveSet.length).toBe(0);
   });
+
+  it("should not be able to move if a friendly piece is there", () => {
+    const spy = jest.spyOn(rook, "updateLegalMoves");
+    const r1 = new Rook(board, "black", { x: 4, y: 5 });
+    board.setSquare(r1.getPosition(), r1);
+    expect(spy).toBeCalled();
+    expect(rook.canMove({ x: 4, y: 5 })).toBeFalsy();
+  });
 });

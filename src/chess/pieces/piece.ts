@@ -13,12 +13,13 @@ export abstract class Piece extends AbstractPieceMover {
     this.position = position;
     this.hasMoved = false;
     this.legalMoves = [];
+    board.subscribe(this);
   }
 
   move(move: Move) {
     this.position = move.getGoalPosition();
     this.hasMoved = true;
-    this.legalMoves = this.generateMoveSet();
+    this.updateLegalMoves();
   }
 
   getPosition(): Position {
@@ -31,6 +32,10 @@ export abstract class Piece extends AbstractPieceMover {
 
   getLegalMoves(): Move[] {
     return this.legalMoves;
+  }
+
+  updateLegalMoves() {
+    this.legalMoves = this.generateMoveSet();
   }
 
   generateMoveSet(): Move[] {
@@ -46,7 +51,9 @@ export abstract class Piece extends AbstractPieceMover {
         y: moveSet[1] + this.position.y
       };
       if (!this.outsideOfBoard(newPosition)) {
-        moves.push(this.createMove(newPosition));
+        if (!this.hasFriendlyPiece(newPosition)) {
+          moves.push(this.createMove(newPosition));
+        }
       }
     });
     return moves;

@@ -37,6 +37,10 @@ export abstract class AbstractPieceMover {
     return this.board.hasPiece(position);
   }
 
+  hasFriendlyPiece(position: Position): boolean {
+    return this.hasPiece(position) && !this.hasEnemyPiece(position);
+  }
+
   hasEnemyPiece(position: Position): boolean {
     const piece = this.board.getSquare(position);
     if (piece) {

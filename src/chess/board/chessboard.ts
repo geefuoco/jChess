@@ -31,8 +31,10 @@ export const pieceMap: Map = {
 
 export class ChessBoard {
   board: (Piece | null)[][];
+  pieces: Piece[];
   constructor() {
     this.board = this.createChessBoard(8);
+    this.pieces = [];
   }
 
   private createChessBoard(sideLength: number): (Piece | null)[][] {
@@ -60,10 +62,11 @@ export class ChessBoard {
 
   setSquare(position: Position, piece: Piece | null) {
     this.board[position.x][position.y] = piece;
+    this.update();
   }
 
-  getPieces() {
-    return this.board.flat().filter((value) => value !== null);
+  getPieces(): Piece[] {
+    return this.board.flat().filter((value) => value !== null) as Piece[];
   }
 
   move(piece: Piece, position: Position) {
@@ -80,5 +83,20 @@ export class ChessBoard {
     } else {
       throw new Error(`Invalid move for ${piece.constructor.name}`);
     }
+    this.update();
+  }
+
+  subscribe(piece: Piece) {
+    this.pieces.push(piece);
+  }
+
+  unsubscribe(piece: Piece) {
+    this.pieces = this.pieces.filter((p) => p !== piece);
+  }
+
+  update() {
+    this.pieces.forEach((piece) => {
+      piece.updateLegalMoves();
+    });
   }
 }
