@@ -15,7 +15,11 @@ const Board: React.FC = () => {
       row.forEach((piece, colIdx) => {
         cellRow.push(
           <Cell
-            piece={piece ? pieceMap[piece.getPieceCode()] : undefined}
+            piece={
+              piece
+                ? { piece, image: pieceMap[piece.getPieceCode()] as string }
+                : undefined
+            }
             light={((colIdx + rowIdx) & 1) === 1}
             key={`${rowIdx}-${colIdx}`}
           />
