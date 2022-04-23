@@ -58,4 +58,23 @@ describe("Rook", () => {
     })[0];
     expect(captureMove.constructor.name).toBe("Capture");
   });
+
+  it("should not have moves beyond a piece", () => {
+    const pos1 = { x: 3, y: 4 };
+    const pos2 = { x: 4, y: 3 };
+    const pos3 = { x: 5, y: 4 };
+    const pos4 = { x: 4, y: 5 };
+    const r1 = new Rook(board, "black", pos1);
+    const r2 = new Rook(board, "black", pos2);
+    const r3 = new Rook(board, "black", pos3);
+    const r4 = new Rook(board, "black", pos4);
+
+    board.setSquare(pos1, r1);
+    board.setSquare(pos2, r2);
+    board.setSquare(pos3, r3);
+    board.setSquare(pos4, r4);
+
+    const moveSet = rook.generateMoveSet();
+    expect(moveSet.length).toBe(0);
+  });
 });

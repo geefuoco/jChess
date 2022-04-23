@@ -8,6 +8,7 @@ export abstract class SlidingPiece extends Piece {
     super(board, color, position);
     this.legalMoves = this.generateMoveSet();
   }
+
   generateMoveSet(): Move[] {
     const that = this; //eslint-disable-line
     type childPiece = {
@@ -31,11 +32,17 @@ export abstract class SlidingPiece extends Piece {
     moves: Move[]
   ) {
     while (!this.outsideOfBoard(newPosition)) {
-      moves.push(this.createMove(newPosition));
-      if (this.hasPiece(newPosition)) break;
-      const rankOffset = moveSet[0] + newPosition.x;
-      const fileOffset = moveSet[1] + newPosition.y;
-      newPosition = { x: rankOffset, y: fileOffset };
+      if (this.hasEnemyPiece(newPosition)) {
+        moves.push(this.createMove(newPosition));
+        break;
+      } else if (!this.hasPiece(newPosition)) {
+        moves.push(this.createMove(newPosition));
+        const rankOffset = moveSet[0] + newPosition.x;
+        const fileOffset = moveSet[1] + newPosition.y;
+        newPosition = { x: rankOffset, y: fileOffset };
+      } else {
+        break;
+      }
     }
   }
 }

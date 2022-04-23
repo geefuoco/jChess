@@ -78,7 +78,7 @@ export class ChessBoard {
       this.setSquare(oldPos, null);
       this.setSquare(position, piece);
     } else {
-      throw new Error(`Invalid move for ${piece.constructor}`);
+      throw new Error(`Invalid move for ${piece.constructor.name}`);
     }
   }
 }
