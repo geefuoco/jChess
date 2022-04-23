@@ -2,6 +2,8 @@ import React from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
 import App from "./components/App";
+import { HTML5Backend } from "react-dnd-html5-backend";
+import { DndProvider } from "react-dnd";
 import { ChessBoard } from "./chess/board/chessboard";
 import { Fen } from "./chess/fen/fen";
 
@@ -23,8 +25,10 @@ const root = createRoot(document.getElementById("root") as HTMLElement);
 
 root.render(
   <React.StrictMode>
-    <ChessBoardContext.Provider value={chessBoard}>
-      <App />
-    </ChessBoardContext.Provider>
+    <DndProvider backend={HTML5Backend}>
+      <ChessBoardContext.Provider value={chessBoard}>
+        <App />
+      </ChessBoardContext.Provider>
+    </DndProvider>
   </React.StrictMode>
 );
