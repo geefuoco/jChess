@@ -55,7 +55,9 @@ export class Pawn extends Piece {
         x: this.position.x + specialMoveset[0] * this.direction,
         y: this.position.y + specialMoveset[1]
       };
-      moves.push(new Move(position, true));
+      if (!this.hasPiece(position)) {
+        moves.push(new Move(position, true));
+      }
     }
 
     captureMoveset.forEach((moveset) => {
