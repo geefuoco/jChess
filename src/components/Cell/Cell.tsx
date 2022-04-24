@@ -40,7 +40,6 @@ const Cell: React.FC<Props> = ({ piece, light, position, setBoard }) => {
         try {
           chessBoard.move(piece, position);
           setBoard([...chessBoard.getBoard()]);
-          //now update state
         } catch (error) {
           console.error(error);
         }

@@ -3,16 +3,12 @@ import "./Board.css";
 import Cell from "../Cell/Cell";
 import { pieceMap } from "../../chess/board/chessboard";
 import { ChessBoardContext } from "../..";
-import { Piece } from "../../chess/pieces/piece";
-
-type virtualBoard = (Piece | null)[][];
 
 const Board: React.FC = () => {
   const chessBoard = useContext(ChessBoardContext);
-  const immutableBoard = chessBoard.getBoard();
-  const [board, setBoard] = useState(immutableBoard);
+  const [board, setBoard] = useState(chessBoard.getBoard());
 
-  const generateBoard = (board: virtualBoard): JSX.Element[] => {
+  const generateBoard = (): JSX.Element[] => {
     const elements: JSX.Element[] = [];
     board.forEach((row, rowIdx) => {
       const cellRow: JSX.Element[] = [];
@@ -48,7 +44,7 @@ const Board: React.FC = () => {
       className="board"
       onDrag={(e) => e.preventDefault()}
     >
-      {generateBoard(board)}
+      {generateBoard()}
     </div>
   );
 };
