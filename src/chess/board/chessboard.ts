@@ -84,6 +84,7 @@ export class ChessBoard {
         JSON.stringify(move.getGoalPosition()) == JSON.stringify(position)
     )[0];
     if (move) {
+      console.log(move.constructor.name);
       const oldPos = piece.getPosition();
       piece.move(move);
       this.setSquare(oldPos, null);
@@ -136,13 +137,13 @@ export class ChessBoard {
     this.pieces = this.pieces.filter((p) => p !== piece);
   }
 
-  update() {
+  private update() {
     this.pieces.forEach((piece) => {
       piece.updateLegalMoves();
     });
   }
 
-  updatePassablePieces() {
+  private updatePassablePieces() {
     this.pieces.forEach((piece) => {
       if (piece instanceof Pawn) {
         piece.setPassable(false);

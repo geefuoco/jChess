@@ -3,6 +3,7 @@ import { Piece } from "../piece";
 import { Move } from "../../moves/move";
 import { ChessBoard } from "../../board/chessboard";
 import { Capture } from "../../moves/capture";
+import { Promotion } from "../../moves/promotion";
 
 export class Pawn extends Piece {
   passable: boolean;
@@ -48,7 +49,11 @@ export class Pawn extends Piece {
     };
 
     if (!this.outsideOfBoard(position) && !this.hasPiece(position)) {
-      moves.push(this.createMove(position));
+      if (position.x === 0 || position.x === 7) {
+        moves.push(new Promotion(position));
+      } else {
+        moves.push(this.createMove(position));
+      }
     }
 
     if (!this.hasMoved) {
@@ -67,7 +72,13 @@ export class Pawn extends Piece {
         y: this.position.y + moveset[1]
       };
       if (!this.outsideOfBoard(position) && this.hasEnemyPiece(position)) {
-        moves.push(this.createMove(position));
+        if (position.x === 0 || position.x === 7) {
+          moves.push(
+            new Promotion(position, this.board.getSquare(position) as Piece)
+          );
+        } else {
+          moves.push(this.createMove(position));
+        }
       }
     });
 
