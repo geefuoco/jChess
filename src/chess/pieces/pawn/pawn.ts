@@ -2,6 +2,7 @@ import { Position } from "../../interfaces/position";
 import { Piece } from "../piece";
 import { Move } from "../../moves/move";
 import { ChessBoard } from "../../board/chessboard";
+import { Capture } from "../../moves/capture";
 
 export class Pawn extends Piece {
   passable: boolean;
@@ -70,7 +71,35 @@ export class Pawn extends Piece {
       }
     });
 
+    this.captureEnPassent(moves);
+
     return moves;
+  }
+
+  captureEnPassent(moves: Move[]) {
+    const positions = [
+      {
+        x: this.position.x,
+        y: this.position.y - 1
+      },
+      {
+        x: this.position.x,
+        y: this.position.y + 1
+      }
+    ];
+
+    positions.forEach((pos) => {
+      if (!this.outsideOfBoard(pos) && this.hasEnemyPiece(pos)) {
+        const pawn = this.board.getSquare(pos);
+        if (pawn instanceof Pawn && pawn.getPassable()) {
+          const capturePos = {
+            x: pos.x + 1 * this.direction,
+            y: pos.y
+          };
+          moves.push(new Capture(capturePos, pawn));
+        }
+      }
+    });
   }
 
   getPieceCode(): string {
