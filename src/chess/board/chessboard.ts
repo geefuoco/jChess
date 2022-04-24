@@ -13,6 +13,8 @@ import rookWhite from "../../assets/rook_white.png";
 import { Position } from "../interfaces/position";
 import { Piece } from "../pieces/piece";
 import { Map } from "../interfaces/map";
+import { Capture } from "../moves/capture";
+import { Pawn } from "../pieces/pawn/pawn";
 
 export const pieceMap: Map = {
   k: kingBlack,
@@ -80,10 +82,21 @@ export class ChessBoard {
       piece.move(move);
       this.setSquare(oldPos, null);
       this.setSquare(position, piece);
+      if (move instanceof Capture) {
+        const deadPiece = move.getAttackedPiece();
+        if (
+          JSON.stringify(piece.getPosition()) !==
+          JSON.stringify(deadPiece.getPosition())
+        ) {
+          this.unsubscribe(deadPiece);
+          this.setSquare(deadPiece.getPosition(), null);
+        }
+      }
     } else {
       throw new Error(`Invalid move for ${piece.constructor.name}`);
     }
     this.update();
+    this.updatePassablePieces();
   }
 
   subscribe(piece: Piece) {
@@ -97,6 +110,14 @@ export class ChessBoard {
   update() {
     this.pieces.forEach((piece) => {
       piece.updateLegalMoves();
+    });
+  }
+
+  updatePassablePieces() {
+    this.pieces.forEach((piece) => {
+      if (piece instanceof Pawn) {
+        piece.setPassable(false);
+      }
     });
   }
 }
