@@ -84,7 +84,8 @@ const Cell: React.FC<Props> = ({ piece, light, position, setBoard }) => {
             alt={piece.piece.getPieceCode()}
             className="piece"
             style={{
-              opacity: isDragging ? 0 : 1
+              opacity: isDragging ? 0 : 1,
+              transform: "translate(0, 0)"
             }}
           />
         )}
