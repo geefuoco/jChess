@@ -4,10 +4,18 @@ import { Rook } from "../pieces/rook/rook";
 
 export class Castle extends Move {
   rook: Rook;
-  move: Move;
-  constructor(goalPosition: Position, rook: Rook, move: Move) {
+  rookPosition: Position;
+  constructor(goalPosition: Position, rook: Rook, rookPosition: Position) {
     super(goalPosition);
     this.rook = rook;
-    this.move = move;
+    this.rookPosition = rookPosition;
+  }
+
+  getRook(): Rook {
+    return this.rook;
+  }
+
+  getRookPosition(): Position {
+    return this.rookPosition;
   }
 }

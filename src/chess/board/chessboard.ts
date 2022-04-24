@@ -15,6 +15,8 @@ import { Piece } from "../pieces/piece";
 import { Map } from "../interfaces/map";
 import { Capture } from "../moves/capture";
 import { Pawn } from "../pieces/pawn/pawn";
+import { Castle } from "../moves/castle";
+import { Move } from "../moves/move";
 
 export const pieceMap: Map = {
   k: kingBlack,
@@ -86,6 +88,14 @@ export class ChessBoard {
       piece.move(move);
       this.setSquare(oldPos, null);
       this.setSquare(position, piece);
+      if (move instanceof Castle) {
+        const rook = move.getRook();
+        const oldRookPos = rook.getPosition();
+        const rookPosition = move.getRookPosition();
+        rook.move(new Move(rookPosition));
+        this.setSquare(oldRookPos, null);
+        this.setSquare(rookPosition, rook);
+      }
       if (move instanceof Capture) {
         const deadPiece = move.getAttackedPiece();
         if (
