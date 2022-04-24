@@ -1,5 +1,6 @@
 import { ChessBoard } from "../../board/chessboard";
 import { Position } from "../../interfaces/position";
+import { Move } from "../../moves/move";
 import { Piece } from "../piece";
 
 export class King extends Piece {
@@ -21,6 +22,15 @@ export class King extends Piece {
     this.legalMoves = this.generateMoveSet();
   }
 
+  generateMoveSet(): Move[] {
+    const moves = super.generateMoveSet();
+    const invalidPositions = this.board.getAttackedSquares(this.color);
+    return moves.filter((move) => {
+      const pos = move.getGoalPosition();
+      return !(JSON.stringify(pos) in invalidPositions);
+    });
+  }
+
   setChecked(bool: boolean) {
     this.inCheck = bool;
   }
@@ -30,7 +40,7 @@ export class King extends Piece {
   }
 
   canCastle(rook: Piece): boolean {
-    if (rook.constructor.toString() !== "Rook") {
+    if (rook.constructor.name !== "Rook") {
       return false;
     }
     return !this.inCheck && !this.hasMoved && !rook.getHasMoved();

@@ -102,6 +102,21 @@ export class Pawn extends Piece {
     });
   }
 
+  getAttackSquares(): Position[] {
+    const captureMoveSet = Pawn.MOVE_SET.slice(2);
+    const positions: Position[] = [];
+    captureMoveSet.forEach((moveSet) => {
+      const pos = {
+        x: this.position.x + moveSet[0] * this.direction,
+        y: this.position.y + moveSet[1]
+      };
+      if (!this.outsideOfBoard(pos)) {
+        positions.push(pos);
+      }
+    });
+    return positions;
+  }
+
   getPieceCode(): string {
     return this.color === "white" ? "P" : "p";
   }

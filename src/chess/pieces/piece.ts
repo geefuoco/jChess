@@ -67,5 +67,9 @@ export abstract class Piece extends AbstractPieceMover {
     );
   }
 
+  getAttackSquares(): Position[] {
+    return this.legalMoves.map((move) => move.getGoalPosition());
+  }
+
   abstract getPieceCode(): string;
 }

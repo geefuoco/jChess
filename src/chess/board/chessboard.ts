@@ -31,6 +31,10 @@ export const pieceMap: Map = {
   R: rookWhite
 };
 
+type Dict = {
+  [key: string]: boolean | undefined;
+};
+
 export class ChessBoard {
   board: (Piece | null)[][];
   pieces: Piece[];
@@ -97,6 +101,21 @@ export class ChessBoard {
     }
     this.update();
     this.updatePassablePieces();
+  }
+
+  getAttackedSquares(color: string): Dict {
+    const positions = this.getPieces()
+      .filter((piece) => piece.getColor() !== color)
+      .flatMap((piece) => {
+        return piece.getAttackSquares();
+      });
+    const map: Dict = {};
+    for (const pos of positions) {
+      if (!(JSON.stringify(pos) in map)) {
+        map[JSON.stringify(pos)] = true;
+      }
+    }
+    return map;
   }
 
   subscribe(piece: Piece) {
