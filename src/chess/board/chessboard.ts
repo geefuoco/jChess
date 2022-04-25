@@ -17,6 +17,11 @@ import { Capture } from "../moves/capture";
 import { Pawn } from "../pieces/pawn/pawn";
 import { Castle } from "../moves/castle";
 import { Move } from "../moves/move";
+import { Promotion } from "../moves/promotion";
+import { Queen } from "../pieces/queen/queen";
+import { Bishop } from "../pieces/bishop/bishop";
+import { Rook } from "../pieces/rook/rook";
+import { Knight } from "../pieces/knight/knight";
 
 export const pieceMap: Map = {
   k: kingBlack,
@@ -84,7 +89,6 @@ export class ChessBoard {
         JSON.stringify(move.getGoalPosition()) == JSON.stringify(position)
     )[0];
     if (move) {
-      console.log(move.constructor.name);
       const oldPos = piece.getPosition();
       piece.move(move);
       this.setSquare(oldPos, null);
@@ -103,8 +107,14 @@ export class ChessBoard {
           JSON.stringify(piece.getPosition()) !==
           JSON.stringify(deadPiece.getPosition())
         ) {
-          this.unsubscribe(deadPiece);
           this.setSquare(deadPiece.getPosition(), null);
+        }
+        this.unsubscribe(deadPiece);
+      }
+      if (move instanceof Promotion) {
+        const deadPiece = move.getAttackedPiece();
+        if (deadPiece) {
+          this.unsubscribe(deadPiece);
         }
       }
     } else {
@@ -135,6 +145,30 @@ export class ChessBoard {
 
   unsubscribe(piece: Piece) {
     this.pieces = this.pieces.filter((p) => p !== piece);
+  }
+
+  promote(piece: Piece, newPiece: string) {
+    let promotion: Piece;
+    switch (newPiece) {
+      case "B":
+      case "b":
+        promotion = new Bishop(this, piece.getColor(), piece.getPosition());
+        break;
+      case "R":
+      case "r":
+        promotion = new Rook(this, piece.getColor(), piece.getPosition());
+        break;
+      case "N":
+      case "n":
+        promotion = new Knight(this, piece.getColor(), piece.getPosition());
+        break;
+      default:
+        promotion = new Queen(this, piece.getColor(), piece.getPosition());
+        break;
+    }
+
+    this.setSquare(promotion.getPosition(), promotion);
+    this.unsubscribe(piece);
   }
 
   private update() {

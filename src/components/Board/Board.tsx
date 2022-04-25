@@ -3,10 +3,13 @@ import "./Board.css";
 import Cell from "../Cell/Cell";
 import { pieceMap } from "../../chess/board/chessboard";
 import { ChessBoardContext } from "../..";
+import { Piece } from "../../chess/pieces/piece";
+import PromotionBoard from "../PromotionBoard/PromotionBoard";
 
 const Board: React.FC = () => {
   const chessBoard = useContext(ChessBoardContext);
   const [board, setBoard] = useState(chessBoard.getBoard());
+  const [promotablePiece, setPromotablePiece] = useState<Piece | null>(null);
 
   const generateBoard = (): JSX.Element[] => {
     const elements: JSX.Element[] = [];
@@ -26,6 +29,7 @@ const Board: React.FC = () => {
               piece ? piece.getPieceCode() : "empty"
             }`}
             setBoard={setBoard}
+            setPromotablePiece={setPromotablePiece}
           />
         );
       });
@@ -39,13 +43,22 @@ const Board: React.FC = () => {
   };
 
   return (
-    <div
-      data-testid="board"
-      className="board"
-      onDrag={(e) => e.preventDefault()}
-    >
-      {generateBoard()}
-    </div>
+    <>
+      <div
+        data-testid="board"
+        className="board"
+        onDrag={(e) => e.preventDefault()}
+      >
+        {generateBoard()}
+      </div>
+      {promotablePiece && (
+        <PromotionBoard
+          piece={promotablePiece}
+          color={promotablePiece.getColor()}
+          setPromotablePiece={setPromotablePiece}
+        />
+      )}
+    </>
   );
 };
 

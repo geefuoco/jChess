@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useContext } from "react";
+import React, { Dispatch, SetStateAction, useContext, useState } from "react";
 import {
   useDrag,
   useDrop,
@@ -20,9 +20,16 @@ interface Props {
   light: boolean;
   position: Position;
   setBoard: Dispatch<SetStateAction<(Piece | null)[][]>>;
+  setPromotablePiece: Dispatch<SetStateAction<Piece | null>>;
 }
 
-const Cell: React.FC<Props> = ({ piece, light, position, setBoard }) => {
+const Cell: React.FC<Props> = ({
+  piece,
+  light,
+  position,
+  setBoard,
+  setPromotablePiece
+}) => {
   const chessBoard = useContext(ChessBoardContext);
   const [{ isDragging }, drag, dragPreview] = useDrag(() => ({
     type: "piece",
@@ -39,6 +46,9 @@ const Cell: React.FC<Props> = ({ piece, light, position, setBoard }) => {
         const { piece } = item;
         try {
           chessBoard.move(piece, position);
+          if (position.x === 0 || position.x === 7) {
+            setPromotablePiece(piece);
+          }
           setBoard([...chessBoard.getBoard()]);
         } catch (error) {
           console.error(error);

@@ -10,6 +10,7 @@ describe("Cell", () => {
         light={false}
         position={{ x: 1, y: 1 }}
         setBoard={{} as Dispatch<SetStateAction<(Piece | null)[][]>>}
+        setPromotablePiece={{} as Dispatch<SetStateAction<Piece | null>>}
       />
     );
 
