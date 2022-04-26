@@ -59,7 +59,7 @@ const Cell: React.FC<Props> = ({
       },
       canDrop: (item: PieceObject) => {
         const piece = item.piece;
-        if (piece.canMove(position)) {
+        if (piece.canMove(position) && !piece.board.badMove(piece, position)) {
           return true;
         }
         return false;
@@ -75,7 +75,7 @@ const Cell: React.FC<Props> = ({
   const dropStyles =
     !isOver && canDrop
       ? {
-          backgroundColor: "#E9E887"
+          border: "solid 6px #E9E887"
         }
       : undefined;
 

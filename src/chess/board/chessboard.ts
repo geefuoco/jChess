@@ -54,10 +54,12 @@ export class ChessBoard {
   board: (Piece | null)[][];
   pieces: Piece[];
   targetKing: King | null;
+  enPassent: Pawn | null;
   constructor() {
     this.board = this.createChessBoard(8);
     this.pieces = [];
     this.targetKing = null;
+    this.enPassent = null;
   }
 
   getBoard(): (Piece | null)[][] {
@@ -117,14 +119,18 @@ export class ChessBoard {
           this.unsubscribe(deadPiece);
         }
       }
+      this.resetEnPassent();
+      if (move.isSpecial()) {
+        this.enPassent = piece as Pawn;
+      }
     } else {
       throw new Error(`Invalid move for ${piece.constructor.name}`);
     }
     this.update();
-    this.updatePassablePieces();
     if (this.check()) {
       this.targetKing = this.getKingUnderAttack();
       this.targetKing?.setChecked(true);
+      this.targetKing?.updateLegalMoves();
       // find where to switch back to false. Maybe in king move method ?
       console.log(`Check on ${this.targetKing?.getColor()} king`);
     } else {
@@ -205,7 +211,7 @@ export class ChessBoard {
     return (king as King) || null;
   }
 
-  private badMove(piece: Piece, position: Position): boolean {
+  badMove(piece: Piece, position: Position): boolean {
     let bool = false;
 
     //remember old values
@@ -220,7 +226,6 @@ export class ChessBoard {
     this.setSquare(position, piece);
     this.update();
     if (this.isKingUnderAttack(piece.getColor())) {
-      console.log("cannot put your own king in check !");
       bool = true;
     }
 
@@ -238,17 +243,16 @@ export class ChessBoard {
     return bool;
   }
 
+  private resetEnPassent() {
+    if (this.enPassent) {
+      this.enPassent.setPassable(false);
+    }
+    this.enPassent = null;
+  }
+
   private update() {
     this.pieces.forEach((piece) => {
       piece.updateLegalMoves();
-    });
-  }
-
-  private updatePassablePieces() {
-    this.pieces.forEach((piece) => {
-      if (piece instanceof Pawn) {
-        piece.setPassable(false);
-      }
     });
   }
 

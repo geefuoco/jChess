@@ -34,6 +34,10 @@ export class King extends Piece {
     });
   }
 
+  getAttackSquares(): Position[] {
+    return super.generateMoveSet().map((mov) => mov.getGoalPosition());
+  }
+
   generateCastleMoves(moves: Move[]) {
     const kingXPos = this.position.x;
     const [k1, k2] = [
