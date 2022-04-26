@@ -75,8 +75,7 @@ const Cell: React.FC<Props> = ({
   const dropStyles =
     !isOver && canDrop
       ? {
-          backgroundColor: "lightgreen",
-          border: "solid 3px yellow"
+          backgroundColor: "#E9E887"
         }
       : undefined;
 

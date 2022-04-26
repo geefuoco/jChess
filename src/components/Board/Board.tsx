@@ -48,6 +48,7 @@ const Board: React.FC = () => {
         data-testid="board"
         className="board"
         onDrag={(e) => e.preventDefault()}
+        onContextMenu={(e) => e.preventDefault()}
       >
         {generateBoard()}
       </div>
