@@ -1,4 +1,4 @@
-import { ChessBoard } from "../board/chessboard";
+import { ChessBoard, Color } from "../board/chessboard";
 import { Position } from "../interfaces/position";
 import { Move } from "../moves/move";
 import { AbstractPieceMover } from "../moves/abstractPieceMover/abstractPieceMover";
@@ -8,7 +8,7 @@ export abstract class Piece extends AbstractPieceMover {
   protected hasMoved: boolean;
   protected legalMoves: Move[];
 
-  constructor(board: ChessBoard, color: string, position: Position) {
+  constructor(board: ChessBoard, color: Color, position: Position) {
     super(board, color);
     this.position = position;
     this.hasMoved = false;

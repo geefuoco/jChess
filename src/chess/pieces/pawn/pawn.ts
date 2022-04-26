@@ -1,7 +1,7 @@
 import { Position } from "../../interfaces/position";
 import { Piece } from "../piece";
 import { Move } from "../../moves/move";
-import { ChessBoard } from "../../board/chessboard";
+import { ChessBoard, Color } from "../../board/chessboard";
 import { Capture } from "../../moves/capture";
 import { Promotion } from "../../moves/promotion";
 
@@ -15,7 +15,7 @@ export class Pawn extends Piece {
     [1, -1]
   ];
 
-  constructor(board: ChessBoard, color: string, position: Position) {
+  constructor(board: ChessBoard, color: Color, position: Position) {
     super(board, color, position);
     this.passable = false;
     this.direction = this.color === "white" ? -1 : 1;

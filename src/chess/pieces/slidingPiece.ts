@@ -1,10 +1,10 @@
-import { ChessBoard } from "../board/chessboard";
+import { ChessBoard, Color } from "../board/chessboard";
 import { Position } from "../interfaces/position";
 import { Move } from "../moves/move";
 import { Piece } from "./piece";
 
 export abstract class SlidingPiece extends Piece {
-  constructor(board: ChessBoard, color: string, position: Position) {
+  constructor(board: ChessBoard, color: Color, position: Position) {
     super(board, color, position);
     this.legalMoves = this.generateMoveSet();
   }

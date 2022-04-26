@@ -1,4 +1,4 @@
-import { ChessBoard } from "../../board/chessboard";
+import { ChessBoard, Color } from "../../board/chessboard";
 import { Position } from "../../interfaces/position";
 import { Piece } from "../../pieces/piece";
 import { Capture } from "../capture";
@@ -6,8 +6,8 @@ import { Move } from "../move";
 
 export abstract class AbstractPieceMover {
   board: ChessBoard;
-  color: string;
-  constructor(board: ChessBoard, color: string) {
+  color: Color;
+  constructor(board: ChessBoard, color: Color) {
     this.board = board;
     this.color = color;
   }
@@ -29,7 +29,7 @@ export abstract class AbstractPieceMover {
     return new Move(newPosition);
   }
 
-  getColor(): string {
+  getColor(): Color {
     return this.color;
   }
 

@@ -22,6 +22,7 @@ import { Queen } from "../pieces/queen/queen";
 import { Bishop } from "../pieces/bishop/bishop";
 import { Rook } from "../pieces/rook/rook";
 import { Knight } from "../pieces/knight/knight";
+import { King } from "../pieces/king/king";
 
 export const pieceMap: Map = {
   k: kingBlack,
@@ -37,6 +38,13 @@ export const pieceMap: Map = {
   r: rookBlack,
   R: rookWhite
 };
+
+enum Colors {
+  "white",
+  "black"
+}
+
+export type Color = keyof typeof Colors;
 
 type Dict = {
   [key: string]: boolean | undefined;
@@ -124,7 +132,7 @@ export class ChessBoard {
     this.updatePassablePieces();
   }
 
-  getAttackedSquares(color: string): Dict {
+  getAttackedSquares(color: Color): Dict {
     const positions = this.getPieces()
       .filter((piece) => piece.getColor() !== color)
       .flatMap((piece) => {
