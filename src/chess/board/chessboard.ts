@@ -53,20 +53,11 @@ type Dict = {
 export class ChessBoard {
   board: (Piece | null)[][];
   pieces: Piece[];
+  targetKing: King | null;
   constructor() {
     this.board = this.createChessBoard(8);
     this.pieces = [];
-  }
-
-  private createChessBoard(sideLength: number): (Piece | null)[][] {
-    const board = [];
-    for (let i = 0; i < sideLength; i++) {
-      board[i] = [] as (Piece | null)[];
-      for (let j = 0; j < sideLength; j++) {
-        board[i].push(null);
-      }
-    }
-    return board;
+    this.targetKing = null;
   }
 
   getBoard(): (Piece | null)[][] {
@@ -87,7 +78,7 @@ export class ChessBoard {
   }
 
   getPieces(): Piece[] {
-    return this.board.flat().filter((value) => value !== null) as Piece[];
+    return this.pieces;
   }
 
   move(piece: Piece, position: Position) {
@@ -97,6 +88,7 @@ export class ChessBoard {
         JSON.stringify(move.getGoalPosition()) == JSON.stringify(position)
     )[0];
     if (move) {
+      if (this.badMove(piece, position)) return;
       const oldPos = piece.getPosition();
       piece.move(move);
       this.setSquare(oldPos, null);
@@ -130,6 +122,14 @@ export class ChessBoard {
     }
     this.update();
     this.updatePassablePieces();
+    if (this.check()) {
+      this.targetKing = this.getKingUnderAttack();
+      this.targetKing?.setChecked(true);
+      // find where to switch back to false. Maybe in king move method ?
+      console.log(`Check on ${this.targetKing?.getColor()} king`);
+    } else {
+      this.targetKing = null;
+    }
   }
 
   getAttackedSquares(color: Color): Dict {
@@ -179,6 +179,65 @@ export class ChessBoard {
     this.unsubscribe(piece);
   }
 
+  check(): boolean {
+    return this.isKingUnderAttack("white") || this.isKingUnderAttack("black");
+  }
+
+  getKingUnderAttack(): King | null {
+    if (this.isKingUnderAttack("black")) {
+      return this.getKing("black");
+    } else if (this.isKingUnderAttack("white")) {
+      return this.getKing("white");
+    }
+    return null;
+  }
+
+  isKingUnderAttack(color: Color): boolean {
+    const attackedSquares = this.getAttackedSquares(color);
+    const king = this.getKing(color);
+    return JSON.stringify(king?.getPosition()) in attackedSquares;
+  }
+
+  getKing(color: Color): King | null {
+    const king = this.pieces.filter(
+      (p) => p instanceof King && p.getColor() === color
+    )[0];
+    return (king as King) || null;
+  }
+
+  private badMove(piece: Piece, position: Position): boolean {
+    let bool = false;
+
+    //remember old values
+    const oldPos = piece.getPosition();
+    const otherPiece = this.getSquare(position);
+    if (otherPiece) {
+      this.unsubscribe(otherPiece);
+    }
+    //make the move
+    piece.setPosition(position);
+    this.setSquare(oldPos, null);
+    this.setSquare(position, piece);
+    this.update();
+    if (this.isKingUnderAttack(piece.getColor())) {
+      console.log("cannot put your own king in check !");
+      bool = true;
+    }
+
+    //clean up
+    piece.setPosition(oldPos);
+    if (otherPiece) {
+      this.setSquare(position, otherPiece);
+      this.subscribe(otherPiece);
+    } else {
+      this.setSquare(position, null);
+    }
+    this.setSquare(oldPos, piece);
+    this.update();
+
+    return bool;
+  }
+
   private update() {
     this.pieces.forEach((piece) => {
       piece.updateLegalMoves();
@@ -191,5 +250,16 @@ export class ChessBoard {
         piece.setPassable(false);
       }
     });
+  }
+
+  private createChessBoard(sideLength: number): (Piece | null)[][] {
+    const board = [];
+    for (let i = 0; i < sideLength; i++) {
+      board[i] = [] as (Piece | null)[];
+      for (let j = 0; j < sideLength; j++) {
+        board[i].push(null);
+      }
+    }
+    return board;
   }
 }

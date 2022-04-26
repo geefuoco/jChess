@@ -26,6 +26,10 @@ export abstract class Piece extends AbstractPieceMover {
     return this.position;
   }
 
+  setPosition(position: Position) {
+    this.position = position;
+  }
+
   getHasMoved(): boolean {
     return this.hasMoved;
   }
