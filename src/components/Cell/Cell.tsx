@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useContext, useState } from "react";
+import React, { Dispatch, SetStateAction, useContext } from "react";
 import {
   useDrag,
   useDrop,
@@ -44,23 +44,30 @@ const Cell: React.FC<Props> = ({
       accept: "piece",
       drop: (item: PieceObject) => {
         const { piece } = item;
-        try {
-          chessBoard.move(piece, position);
-          if (
-            piece.constructor.name === "Pawn" &&
-            (position.x === 0 || position.x === 7)
-          ) {
-            setPromotablePiece(piece);
+        if (piece.getColor() === piece.board.getCurrentPlayer()) {
+          try {
+            chessBoard.move(piece, position);
+            if (
+              piece.constructor.name === "Pawn" &&
+              (position.x === 0 || position.x === 7)
+            ) {
+              setPromotablePiece(piece);
+            }
+            setBoard([...chessBoard.getBoard()]);
+          } catch (error) {
+            console.error(error);
           }
-          setBoard([...chessBoard.getBoard()]);
-        } catch (error) {
-          console.error(error);
         }
       },
       canDrop: (item: PieceObject) => {
         const piece = item.piece;
-        if (piece.canMove(position) && !piece.board.badMove(piece, position)) {
-          return true;
+        if (piece.getColor() === piece.board.getCurrentPlayer()) {
+          if (
+            piece.canMove(position) &&
+            !piece.board.badMove(piece, position)
+          ) {
+            return true;
+          }
         }
         return false;
       },

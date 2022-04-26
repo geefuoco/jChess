@@ -55,11 +55,13 @@ export class ChessBoard {
   pieces: Piece[];
   targetKing: King | null;
   enPassent: Pawn | null;
+  currentPlayer: Color;
   constructor() {
     this.board = this.createChessBoard(8);
     this.pieces = [];
     this.targetKing = null;
     this.enPassent = null;
+    this.currentPlayer = "white";
   }
 
   getBoard(): (Piece | null)[][] {
@@ -81,6 +83,10 @@ export class ChessBoard {
 
   getPieces(): Piece[] {
     return this.pieces;
+  }
+
+  getCurrentPlayer(): Color {
+    return this.currentPlayer;
   }
 
   move(piece: Piece, position: Position) {
@@ -131,11 +137,12 @@ export class ChessBoard {
       this.targetKing = this.getKingUnderAttack();
       this.targetKing?.setChecked(true);
       this.targetKing?.updateLegalMoves();
-      // find where to switch back to false. Maybe in king move method ?
       console.log(`Check on ${this.targetKing?.getColor()} king`);
     } else {
+      this.targetKing?.setChecked(false);
       this.targetKing = null;
     }
+    this.swapPlayers();
   }
 
   getAttackedSquares(color: Color): Dict {
@@ -241,6 +248,10 @@ export class ChessBoard {
     this.update();
 
     return bool;
+  }
+
+  private swapPlayers() {
+    this.currentPlayer = this.currentPlayer === "white" ? "black" : "white";
   }
 
   private resetEnPassent() {
