@@ -56,12 +56,16 @@ export class ChessBoard {
   targetKing: King | null;
   enPassent: Pawn | null;
   currentPlayer: Color;
+  halfMove: number;
+  fullMove: number;
   constructor() {
     this.board = this.createChessBoard(8);
     this.pieces = [];
     this.targetKing = null;
     this.enPassent = null;
     this.currentPlayer = "white";
+    this.halfMove = 0;
+    this.fullMove = 1;
   }
 
   getBoard(): (Piece | null)[][] {
@@ -90,6 +94,10 @@ export class ChessBoard {
   }
 
   move(piece: Piece, position: Position) {
+    if (this.fiftyMoveRule()) {
+      console.log("Game drawn due to 50 move rule");
+      return;
+    }
     const legalMoves = piece.getLegalMoves();
     const move = legalMoves.filter(
       (move) =>
@@ -118,11 +126,13 @@ export class ChessBoard {
           this.setSquare(deadPiece.getPosition(), null);
         }
         this.unsubscribe(deadPiece);
+        this.halfMove = 0;
       }
       if (move instanceof Promotion) {
         const deadPiece = move.getAttackedPiece();
         if (deadPiece) {
           this.unsubscribe(deadPiece);
+          this.halfMove = 0;
         }
       }
       this.resetEnPassent();
@@ -138,10 +148,16 @@ export class ChessBoard {
       this.targetKing?.setChecked(true);
       this.targetKing?.updateLegalMoves();
       console.log(`Check on ${this.targetKing?.getColor()} king`);
+      if (this.checkmate()) {
+        console.log(`Checkmate. ${this.currentPlayer} wins`);
+        return;
+      }
     } else {
       this.targetKing?.setChecked(false);
       this.targetKing = null;
     }
+    this.incrementHalfMove();
+    this.incrementFullMove();
     this.swapPlayers();
   }
 
@@ -196,6 +212,19 @@ export class ChessBoard {
     return this.isKingUnderAttack("white") || this.isKingUnderAttack("black");
   }
 
+  checkmate(): boolean {
+    return (
+      this.targetKing !== null &&
+      this.targetKing.isChecked() &&
+      this.targetKing
+        .getLegalMoves()
+        .map((mov) =>
+          this.badMove(this.targetKing as Piece, mov.getGoalPosition())
+        )
+        .filter((bool) => bool === false).length === 0
+    );
+  }
+
   getKingUnderAttack(): King | null {
     if (this.isKingUnderAttack("black")) {
       return this.getKing("black");
@@ -248,6 +277,18 @@ export class ChessBoard {
     this.update();
 
     return bool;
+  }
+
+  private incrementHalfMove() {
+    this.halfMove += 1;
+  }
+
+  private incrementFullMove() {
+    this.fullMove += 1;
+  }
+
+  private fiftyMoveRule(): boolean {
+    return this.halfMove >= 50;
   }
 
   private swapPlayers() {
