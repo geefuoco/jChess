@@ -14,10 +14,9 @@ const fen = new Fen({
   castling: "KQkq",
   enPassent: "-",
   halfMove: 0,
-  fullMove: 1,
-  board: chessBoard
+  fullMove: 1
 });
-fen.setBoardFromFen();
+Fen.setBoardFromFen(chessBoard, fen);
 
 export const ChessBoardContext = React.createContext<ChessBoard>(chessBoard);
 
