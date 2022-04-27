@@ -39,6 +39,20 @@ export class Fen {
     return `${this.pieces} ${this.activeColor} ${this.castling} ${this.enPassent} ${this.halfMove} ${this.fullMove}`;
   }
 
+  static from(str: string): Fen | undefined {
+    if (!Fen.validFenString(str)) return;
+    const [pieces, activeColor, castling, enPassent, halfMove, fullMove] =
+      str.split(" ");
+    return new Fen({
+      pieces,
+      activeColor: activeColor as "w" | "b",
+      castling,
+      enPassent,
+      halfMove: parseInt(halfMove),
+      fullMove: parseInt(fullMove)
+    });
+  }
+
   static setBoardFromFen(board: ChessBoard, fen: Fen) {
     if (!this.validFenString(fen.getFen())) {
       throw new Error("Invalid FEN String");
