@@ -16,7 +16,6 @@ export class Fen {
   enPassent: string;
   halfMove: number;
   fullMove: number;
-  board: ChessBoard;
   static STARTING_BOARD =
     "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
@@ -26,8 +25,7 @@ export class Fen {
     castling,
     enPassent,
     halfMove,
-    fullMove,
-    board
+    fullMove
   }: FenOptions) {
     this.pieces = pieces;
     this.activeColor = activeColor;
@@ -35,18 +33,17 @@ export class Fen {
     this.enPassent = enPassent;
     this.halfMove = halfMove;
     this.fullMove = fullMove;
-    this.board = board;
   }
 
   getFen(): string {
     return `${this.pieces} ${this.activeColor} ${this.castling} ${this.enPassent} ${this.halfMove} ${this.fullMove}`;
   }
 
-  setBoardFromFen() {
-    if (!this.validFenString(this.getFen())) {
+  static setBoardFromFen(board: ChessBoard, fen: Fen) {
+    if (!this.validFenString(fen.getFen())) {
       throw new Error("Invalid FEN String");
     }
-    const pieces = this.pieces.split("/");
+    const pieces = fen.pieces.split("/");
     for (let i = 0; i < pieces.length; i++) {
       const section = pieces[i];
       for (let j = 0; j < section.length; j++) {
@@ -54,8 +51,8 @@ export class Fen {
         const tile = section[j];
         if (tile in pieceMap) {
           const pos = { x: i, y: j };
-          const piece = this.createPiece(tile, pos);
-          this.board.setSquare(pos, piece);
+          const piece = this.createPiece(board, tile, pos);
+          board.setSquare(pos, piece);
         }
       }
     }
@@ -134,7 +131,7 @@ export class Fen {
     return str.length > 0 ? str : "-";
   }
 
-  validFenString(fen: string): boolean {
+  static validFenString(fen: string): boolean {
     const fenRegex =
       /\s*([rnbqkpRNBQKP1-8]+\/){7}([rnbqkpRNBQKP1-8]+)\s[bw-]\s(([a-hkqA-HKQ]{1,4})|(-))\s(([a-h][36])|(-))\s\d+\s\d+\s*/;
     const result = fen.match(fenRegex);
@@ -160,32 +157,36 @@ export class Fen {
     }
   }
 
-  createPiece(pieceKey: string, position: Position): Piece {
+  static createPiece(
+    board: ChessBoard,
+    pieceKey: string,
+    position: Position
+  ): Piece {
     switch (pieceKey) {
       case "k":
-        return new King(this.board, "black", position);
+        return new King(board, "black", position);
       case "q":
-        return new Queen(this.board, "black", position);
+        return new Queen(board, "black", position);
       case "r":
-        return new Rook(this.board, "black", position);
+        return new Rook(board, "black", position);
       case "b":
-        return new Bishop(this.board, "black", position);
+        return new Bishop(board, "black", position);
       case "n":
-        return new Knight(this.board, "black", position);
+        return new Knight(board, "black", position);
       case "p":
-        return new Pawn(this.board, "black", position);
+        return new Pawn(board, "black", position);
       case "K":
-        return new King(this.board, "white", position);
+        return new King(board, "white", position);
       case "Q":
-        return new Queen(this.board, "white", position);
+        return new Queen(board, "white", position);
       case "R":
-        return new Rook(this.board, "white", position);
+        return new Rook(board, "white", position);
       case "B":
-        return new Bishop(this.board, "white", position);
+        return new Bishop(board, "white", position);
       case "N":
-        return new Knight(this.board, "white", position);
+        return new Knight(board, "white", position);
       case "P":
-        return new Pawn(this.board, "white", position);
+        return new Pawn(board, "white", position);
       default:
         throw new Error("Invalid Key for creating a piece");
     }

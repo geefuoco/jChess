@@ -1,5 +1,3 @@
-import { ChessBoard } from "../board/chessboard";
-
 export interface FenOptions {
   pieces: string;
   activeColor: "w" | "b";
@@ -7,5 +5,4 @@ export interface FenOptions {
   enPassent: string;
   halfMove: number;
   fullMove: number;
-  board: ChessBoard;
 }
