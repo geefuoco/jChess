@@ -6,11 +6,13 @@ import { ChessBoardContext } from "../..";
 import { Piece } from "../../chess/pieces/piece";
 import PromotionBoard from "../PromotionBoard/PromotionBoard";
 import { Fen } from "../../chess/fen/fen";
+import FenInput from "../FenInput/FenInput";
 
 const Board: React.FC = () => {
   const chessBoard = useContext(ChessBoardContext);
   const [board, setBoard] = useState(chessBoard.getBoard());
   const [promotablePiece, setPromotablePiece] = useState<Piece | null>(null);
+  const [fenInput, setFenInput] = useState(false);
 
   const generateBoard = (): JSX.Element[] => {
     const elements: JSX.Element[] = [];
@@ -43,6 +45,10 @@ const Board: React.FC = () => {
     return elements;
   };
 
+  const toggleFenInput = () => {
+    setFenInput(!fenInput);
+  };
+
   return (
     <>
       <div
@@ -60,9 +66,18 @@ const Board: React.FC = () => {
           setPromotablePiece={setPromotablePiece}
         />
       )}
-      <button onClick={() => console.log(Fen.getFenFromBoard(chessBoard))}>
-        Get Fen
-      </button>
+      <div className="button-group">
+        <button
+          type="button"
+          onClick={() => console.log(Fen.getFenFromBoard(chessBoard))}
+        >
+          Get Fen
+        </button>
+        <button type="button" onClick={toggleFenInput}>
+          Set Fen
+        </button>
+      </div>
+      {fenInput && <FenInput close={setFenInput} updateBoard={setBoard} />}
     </>
   );
 };

@@ -1,0 +1,14 @@
+.fen-input{
+  padding: 8px;
+  border-radius: 10px;
+}
+
+.fen-input button{
+  cursor: pointer;
+  background-color: #FFFFF0;
+  font-size: 12px;
+}
+
+.fen-input button:hover{
+  background-color: #F0FFFF;
+}

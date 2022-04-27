@@ -58,18 +58,23 @@ export class Fen {
       throw new Error("Invalid FEN String");
     }
     const pieces = fen.pieces.split("/");
-    for (let i = 0; i < pieces.length; i++) {
-      const section = pieces[i];
-      for (let j = 0; j < section.length; j++) {
-        if (!isNaN(parseInt(section[j]))) break;
-        const tile = section[j];
-        if (tile in pieceMap) {
-          const pos = { x: i, y: j };
-          const piece = this.createPiece(board, tile, pos);
+    let rank = 0;
+    let file = 0;
+
+    pieces.forEach((string) => {
+      for (const letter of string) {
+        if (!isNaN(Number(letter))) {
+          file += Number(letter);
+        } else {
+          const pos = { x: rank, y: file };
+          const piece = this.createPiece(board, letter, pos);
           board.setSquare(pos, piece);
+          file++;
         }
       }
-    }
+      file = 0;
+      rank++;
+    });
   }
 
   static getFenPiecesFromBoard(chessBoard: ChessBoard) {
@@ -79,17 +84,19 @@ export class Fen {
     for (let i = 0; i < board.length; i++) {
       const row = board[i];
       let count = 0;
+
       for (let j = 0; j < board.length; j++) {
         const piece = row[j];
+
         if (piece) {
           pieces += Fen.getPieceKey(piece);
         } else {
           count++;
+          if (row[j + 1] || j + 1 === board.length) {
+            pieces += count.toString();
+            count = 0;
+          }
         }
-      }
-
-      if (count > 0) {
-        pieces += count.toString();
       }
 
       if (i < board.length - 1) {
