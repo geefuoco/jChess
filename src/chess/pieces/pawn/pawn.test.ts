@@ -61,4 +61,11 @@ describe("Pawn", () => {
     const moves = P.generateMoveSet();
     expect(moves.length).toBe(3);
   });
+
+  it("shouldn't have a special move if a piece is in front", () => {
+    const enemy = new Pawn(board, "black", { x: 2, y: 1 });
+    board.setSquare(enemy.getPosition(), enemy);
+    const moves = p.generateMoveSet();
+    expect(moves.length).toBe(0);
+  });
 });

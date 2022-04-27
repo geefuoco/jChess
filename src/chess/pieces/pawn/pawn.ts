@@ -61,7 +61,11 @@ export class Pawn extends Piece {
         x: this.position.x + specialMoveset[0] * this.direction,
         y: this.position.y + specialMoveset[1]
       };
-      if (!this.hasPiece(position)) {
+      const front = {
+        x: this.position.x + normalMoveset[0] * this.direction,
+        y: this.position.y + normalMoveset[1]
+      };
+      if (!this.hasPiece(position) && !this.hasPiece(front)) {
         moves.push(new Move(position, true));
       }
     }
