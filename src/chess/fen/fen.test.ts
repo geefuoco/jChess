@@ -25,6 +25,6 @@ describe("Fen", () => {
 
   it("should set the board to the starting board", () => {
     f.setBoardFromFen();
-    expect(f.pieces).toEqual(f.getFenPiecesFromBoard());
+    expect(f.pieces).toEqual(Fen.getFenPiecesFromBoard(f.board));
   });
 });

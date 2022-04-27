@@ -61,17 +61,17 @@ export class Fen {
     }
   }
 
-  getFenPiecesFromBoard() {
+  static getFenPiecesFromBoard(chessBoard: ChessBoard) {
     let pieces = "";
 
-    const board = this.board.getBoard();
+    const board = chessBoard.getBoard();
     for (let i = 0; i < board.length; i++) {
       const row = board[i];
       let count = 0;
       for (let j = 0; j < board.length; j++) {
         const piece = row[j];
         if (piece) {
-          pieces += this.getPieceKey(piece);
+          pieces += Fen.getPieceKey(piece);
         } else {
           count++;
         }
@@ -88,6 +88,52 @@ export class Fen {
     return pieces;
   }
 
+  static getFenFromBoard(board: ChessBoard): string {
+    const pieces = this.getFenPiecesFromBoard(board);
+    const activeColor = board.getCurrentPlayer()[0] as "w" | "b";
+    const castling = this.getCastlingRights(board);
+    const enPassentPos = board.getEnPassent()?.getPosition();
+    let enPassent: string;
+    if (enPassentPos) {
+      enPassent = board.convertPositionToChessCoordinate(enPassentPos);
+    } else {
+      enPassent = "-";
+    }
+    const halfMove = board.getHalfMove();
+    const fullMove = board.getFullMove();
+
+    return `${pieces} ${activeColor} ${castling} ${enPassent} ${halfMove} ${fullMove}`;
+  }
+
+  static getCastlingRights(board: ChessBoard): string {
+    const whiteKing = board.getKing("white");
+    const blackKing = board.getKing("black");
+    const whiteQRook = board.getBoard()[7][0];
+    const whiteKRook = board.getBoard()[7][7];
+    const blackQRook = board.getBoard()[0][0];
+    const blackKRook = board.getBoard()[0][7];
+
+    let str = "";
+    if (whiteKing && !whiteKing.getHasMoved()) {
+      if (whiteKRook && !whiteKRook.getHasMoved()) {
+        str += "K";
+      }
+      if (whiteQRook && !whiteQRook.getHasMoved()) {
+        str += "Q";
+      }
+    }
+    if (blackKing && !blackKing.getHasMoved()) {
+      if (blackKRook && !blackKRook.getHasMoved()) {
+        str += "k";
+      }
+      if (blackQRook && !blackQRook.getHasMoved()) {
+        str += "q";
+      }
+    }
+
+    return str.length > 0 ? str : "-";
+  }
+
   validFenString(fen: string): boolean {
     const fenRegex =
       /\s*([rnbqkpRNBQKP1-8]+\/){7}([rnbqkpRNBQKP1-8]+)\s[bw-]\s(([a-hkqA-HKQ]{1,4})|(-))\s(([a-h][36])|(-))\s\d+\s\d+\s*/;
@@ -95,7 +141,7 @@ export class Fen {
     return result && result.length > 0 ? true : false;
   }
 
-  getPieceKey(piece: Piece): string {
+  static getPieceKey(piece: Piece): string {
     switch (piece.constructor) {
       case King:
         return piece.getColor() == "white" ? "K" : "k";

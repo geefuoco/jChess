@@ -5,6 +5,7 @@ import { pieceMap } from "../../chess/board/chessboard";
 import { ChessBoardContext } from "../..";
 import { Piece } from "../../chess/pieces/piece";
 import PromotionBoard from "../PromotionBoard/PromotionBoard";
+import { Fen } from "../../chess/fen/fen";
 
 const Board: React.FC = () => {
   const chessBoard = useContext(ChessBoardContext);
@@ -59,6 +60,9 @@ const Board: React.FC = () => {
           setPromotablePiece={setPromotablePiece}
         />
       )}
+      <button onClick={() => console.log(Fen.getFenFromBoard(chessBoard))}>
+        Get Fen
+      </button>
     </>
   );
 };

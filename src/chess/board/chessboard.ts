@@ -89,8 +89,20 @@ export class ChessBoard {
     return this.pieces;
   }
 
+  getEnPassent(): Pawn | null {
+    return this.enPassent;
+  }
+
   getCurrentPlayer(): Color {
     return this.currentPlayer;
+  }
+
+  getHalfMove(): number {
+    return this.halfMove;
+  }
+
+  getFullMove(): number {
+    return this.fullMove;
   }
 
   move(piece: Piece, position: Position) {
@@ -134,6 +146,9 @@ export class ChessBoard {
           this.unsubscribe(deadPiece);
           this.halfMove = 0;
         }
+      }
+      if (piece instanceof Pawn) {
+        this.halfMove = 0;
       }
       this.resetEnPassent();
       if (move.isSpecial()) {
@@ -277,6 +292,12 @@ export class ChessBoard {
     this.update();
 
     return bool;
+  }
+
+  convertPositionToChessCoordinate(pos: Position): string {
+    const letters = ["a", "b", "c", "d", "e", "f", "g", "h"];
+    const { x, y } = pos;
+    return `${letters[y]}${Math.abs(x - 8)}`;
   }
 
   private incrementHalfMove() {
