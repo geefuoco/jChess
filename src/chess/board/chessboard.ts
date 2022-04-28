@@ -228,15 +228,26 @@ export class ChessBoard {
   }
 
   checkmate(): boolean {
+    const moves: Move[] = [];
+    if (this.targetKing) {
+      const pieces = this.pieces.filter(
+        (p) => p.getColor() === (this.targetKing as King).getColor()
+      );
+      pieces.forEach((p) => {
+        const legal = p.getLegalMoves();
+
+        legal.forEach((mo) => {
+          if (!this.badMove(p, mo.getGoalPosition())) {
+            moves.push(mo);
+          }
+        });
+      });
+    }
+
     return (
       this.targetKing !== null &&
       this.targetKing.isChecked() &&
-      this.targetKing
-        .getLegalMoves()
-        .map((mov) =>
-          this.badMove(this.targetKing as Piece, mov.getGoalPosition())
-        )
-        .filter((bool) => bool === false).length === 0
+      moves.length === 0
     );
   }
 
