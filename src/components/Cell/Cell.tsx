@@ -5,10 +5,11 @@ import {
   DragPreviewImage,
   DropTargetMonitor
 } from "react-dnd";
-import { ChessBoardContext } from "../..";
+import { ChessBoardContext } from "../ChessboardContext";
 import { Position } from "../../chess/interfaces/position";
 import { Piece } from "../../chess/pieces/piece";
 import "./Cell.css";
+import { ChessBoard } from "../../chess/board/chessboard";
 
 interface PieceObject {
   piece: Piece;
@@ -21,6 +22,7 @@ interface Props {
   position: Position;
   setBoard: Dispatch<SetStateAction<(Piece | null)[][]>>;
   setPromotablePiece: Dispatch<SetStateAction<Piece | null>>;
+  gameover: boolean;
 }
 
 const Cell: React.FC<Props> = ({
@@ -28,9 +30,10 @@ const Cell: React.FC<Props> = ({
   light,
   position,
   setBoard,
-  setPromotablePiece
+  setPromotablePiece,
+  gameover
 }) => {
-  const chessBoard = useContext(ChessBoardContext);
+  const chessBoard = useContext(ChessBoardContext).chessBoard as ChessBoard;
   const [{ isDragging }, drag, dragPreview] = useDrag(() => ({
     type: "piece",
     item: piece,
@@ -39,37 +42,43 @@ const Cell: React.FC<Props> = ({
     })
   }));
 
+  const handlePieceMove = (piece: Piece, position: Position) => {
+    if (piece.getColor() === piece.board.getCurrentPlayer()) {
+      try {
+        chessBoard.move(piece, position);
+        if (
+          piece.constructor.name === "Pawn" &&
+          (position.x === 0 || position.x === 7)
+        ) {
+          setPromotablePiece(piece);
+        }
+        setBoard([...chessBoard.getBoard()]);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  };
+
+  const canPieceMove = (piece: Piece, position: Position): boolean => {
+    if (piece.getColor() === piece.board.getCurrentPlayer()) {
+      if (piece.canMove(position) && !piece.board.badMove(piece, position)) {
+        return true;
+      }
+    }
+    return false;
+  };
+
   const [{ isOver, canDrop }, drop] = useDrop(
     () => ({
       accept: "piece",
       drop: (item: PieceObject) => {
         const { piece } = item;
-        if (piece.getColor() === piece.board.getCurrentPlayer()) {
-          try {
-            chessBoard.move(piece, position);
-            if (
-              piece.constructor.name === "Pawn" &&
-              (position.x === 0 || position.x === 7)
-            ) {
-              setPromotablePiece(piece);
-            }
-            setBoard([...chessBoard.getBoard()]);
-          } catch (error) {
-            console.error(error);
-          }
-        }
+
+        handlePieceMove(piece, position);
       },
       canDrop: (item: PieceObject) => {
         const piece = item.piece;
-        if (piece.getColor() === piece.board.getCurrentPlayer()) {
-          if (
-            piece.canMove(position) &&
-            !piece.board.badMove(piece, position)
-          ) {
-            return true;
-          }
-        }
-        return false;
+        return canPieceMove(piece, position);
       },
       collect: (monitor: DropTargetMonitor) => ({
         isOver: monitor.isOver(),
@@ -98,7 +107,7 @@ const Cell: React.FC<Props> = ({
       >
         {piece && (
           <img
-            ref={drag}
+            ref={!gameover ? drag : null}
             src={piece.image}
             alt={piece.piece.getPieceCode()}
             className="piece"

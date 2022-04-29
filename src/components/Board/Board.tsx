@@ -1,18 +1,24 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import "./Board.css";
 import Cell from "../Cell/Cell";
-import { pieceMap } from "../../chess/board/chessboard";
-import { ChessBoardContext } from "../..";
+import { ChessBoard, pieceMap } from "../../chess/board/chessboard";
+import { ChessBoardContext } from "../ChessboardContext";
 import { Piece } from "../../chess/pieces/piece";
 import PromotionBoard from "../PromotionBoard/PromotionBoard";
 import { Fen } from "../../chess/fen/fen";
 import FenInput from "../FenInput/FenInput";
+import Gameover from "../Gameover/Gameover";
 
 const Board: React.FC = () => {
-  const chessBoard = useContext(ChessBoardContext);
+  const chessBoard = useContext(ChessBoardContext).chessBoard as ChessBoard;
   const [board, setBoard] = useState(chessBoard.getBoard());
   const [promotablePiece, setPromotablePiece] = useState<Piece | null>(null);
   const [fenInput, setFenInput] = useState(false);
+  const [isGameover, setIsGameover] = useState(false);
+
+  useEffect(() => {
+    setIsGameover(chessBoard.gameover());
+  }, [board]);
 
   const generateBoard = (): JSX.Element[] => {
     const elements: JSX.Element[] = [];
@@ -33,6 +39,7 @@ const Board: React.FC = () => {
             }`}
             setBoard={setBoard}
             setPromotablePiece={setPromotablePiece}
+            gameover={isGameover}
           />
         );
       });
@@ -51,6 +58,7 @@ const Board: React.FC = () => {
 
   return (
     <>
+      {isGameover && <Gameover />}
       <div
         data-testid="board"
         className="board"

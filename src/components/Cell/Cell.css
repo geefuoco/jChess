@@ -18,3 +18,20 @@
 .dark{
   background-color: #504a42
 }
+
+@media screen and (max-width: 768px) {
+  .cell {
+    aspect-ratio: 1/1;
+    flex-grow: 1;
+    width: auto;
+    height: auto;
+    padding: 10px;
+  }
+}
+
+@media screen and(max-width: 500px){
+  .cell {
+    width:35px;
+    height: 35px;
+  }
+}
