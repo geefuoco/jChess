@@ -106,8 +106,8 @@ export class ChessBoard {
   }
 
   move(piece: Piece, position: Position) {
-    if (this.fiftyMoveRule()) {
-      console.log("Game drawn due to 50 move rule");
+    if (this.isDraw()) {
+      console.log("Game ended in a draw");
       return;
     }
     const legalMoves = piece.getLegalMoves();
@@ -228,27 +228,13 @@ export class ChessBoard {
   }
 
   checkmate(): boolean {
-    const moves: Move[] = [];
     if (this.targetKing) {
-      const pieces = this.pieces.filter(
-        (p) => p.getColor() === (this.targetKing as King).getColor()
+      const moves: Move[] = this.getLegalMovesForColor(
+        this.targetKing.getColor()
       );
-      pieces.forEach((p) => {
-        const legal = p.getLegalMoves();
-
-        legal.forEach((mo) => {
-          if (!this.badMove(p, mo.getGoalPosition())) {
-            moves.push(mo);
-          }
-        });
-      });
+      return this.targetKing.isChecked() && moves.length === 0;
     }
-
-    return (
-      this.targetKing !== null &&
-      this.targetKing.isChecked() &&
-      moves.length === 0
-    );
+    return false;
   }
 
   getKingUnderAttack(): King | null {
@@ -309,6 +295,38 @@ export class ChessBoard {
     const letters = ["a", "b", "c", "d", "e", "f", "g", "h"];
     const { x, y } = pos;
     return `${letters[y]}${Math.abs(x - 8)}`;
+  }
+
+  gameover(): boolean {
+    return this.isDraw() || this.checkmate();
+  }
+
+  private isDraw(): boolean {
+    return this.fiftyMoveRule() || this.stalemate();
+  }
+
+  private stalemate(): boolean {
+    const legalMoves = this.getLegalMovesForColor(this.currentPlayer);
+    return legalMoves.length === 0;
+  }
+
+  private getLegalMovesForColor(color: Color): Move[] {
+    const moves: Move[] = [];
+    const pieces = this.getPiecesOfColor(color);
+    pieces.forEach((p) => {
+      const legal = p.getLegalMoves();
+
+      legal.forEach((mo) => {
+        if (!this.badMove(p, mo.getGoalPosition())) {
+          moves.push(mo);
+        }
+      });
+    });
+    return moves;
+  }
+
+  private getPiecesOfColor(color: Color): Piece[] {
+    return this.pieces.filter((p) => p.getColor() === color);
   }
 
   private incrementHalfMove() {
