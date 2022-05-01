@@ -75,6 +75,14 @@ export class Fen {
       file = 0;
       rank++;
     });
+    board.currentPlayer = fen.activeColor === "w" ? "white" : "black";
+    board.halfMove = fen.halfMove;
+    board.fullMove = fen.fullMove;
+    const pos = board.convertChessCoordinateToPosition(fen.enPassent);
+    if (pos) {
+      const pawn = board.getSquare(pos) as Pawn;
+      board.enPassent = pawn;
+    }
   }
 
   static getFenPiecesFromBoard(chessBoard: ChessBoard) {

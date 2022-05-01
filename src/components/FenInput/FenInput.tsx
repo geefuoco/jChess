@@ -29,7 +29,7 @@ const FenInput: React.FC<Props> = ({ close, updateBoard }) => {
       if (fen && chessBoard) {
         Fen.setBoardFromFen(newBoard, fen);
         setChessBoard(newBoard);
-        updateBoard([...newBoard.getBoard()]);
+        updateBoard(newBoard.getBoard());
         close(false);
       } else {
         console.error("Could not load FEN string");
