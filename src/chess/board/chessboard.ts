@@ -307,12 +307,68 @@ export class ChessBoard {
   }
 
   private isDraw(): boolean {
-    return this.fiftyMoveRule() || this.stalemate();
+    return this.fiftyMoveRule() || this.stalemate() || this.unwinablePosition();
   }
 
   private stalemate(): boolean {
     const legalMoves = this.getLegalMovesForColor(this.currentPlayer);
     return legalMoves.length === 0;
+  }
+
+  private unwinablePosition(): boolean {
+    const nonKingPieces = this.pieces.filter((p) => !(p instanceof King));
+    if (nonKingPieces.length === 0) return true;
+    const nonBishopKnightKingPieces = nonKingPieces.filter((p) => {
+      return !(p instanceof Knight) && !(p instanceof Bishop);
+    });
+    if (nonBishopKnightKingPieces.length === 0) {
+      const pieceCount = this.pieceCount();
+      if (
+        (pieceCount["N"] > 0 &&
+          (pieceCount["Bls"] > 0 || pieceCount["Bds"] > 0)) ||
+        (pieceCount["n"] > 0 &&
+          (pieceCount["bls"] > 0 || pieceCount["bds"] > 0))
+      ) {
+        //Knight and bishop
+        return false;
+      }
+      if (
+        (pieceCount["N"] === 0 &&
+          pieceCount["Bls"] > 0 &&
+          pieceCount["Bds"] > 0) ||
+        (pieceCount["n"] === 0 &&
+          pieceCount["bls"] > 0 &&
+          pieceCount["bds"] > 0)
+      ) {
+        //Bishop pair
+        return false;
+      }
+      if (pieceCount["N"] > 2 || pieceCount["n"] > 2) {
+        //3 knights
+        return false;
+      }
+      return true;
+    }
+    return false;
+  }
+
+  private pieceCount(): { [key: string]: number } {
+    const map: { [key: string]: number } = {};
+    this.pieces.forEach((p) => {
+      let code = p.getPieceCode();
+      if (p instanceof Bishop) {
+        const x = p.getPosition().x;
+        const y = p.getPosition().y;
+        const suffix = ((x + y) & 1) === 1 ? "ls" : "ds";
+        code += suffix;
+      }
+
+      if (!(code in map)) {
+        map[code] = 0;
+      }
+      map[code]++;
+    });
+    return map;
   }
 
   private getLegalMovesForColor(color: Color): Move[] {

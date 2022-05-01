@@ -51,7 +51,7 @@ const Cell: React.FC<Props> = ({
         chessBoard.move(piece, position);
         if (
           piece.constructor.name === "Pawn" &&
-          (position.x === 0 || position.x === 7)
+          (piece.getPosition().x === 0 || piece.getPosition().x === 7)
         ) {
           setPromotablePiece(piece);
         }

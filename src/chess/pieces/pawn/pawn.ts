@@ -48,7 +48,7 @@ export class Pawn extends Piece {
       y: this.position.y + normalMoveset[1]
     };
 
-    if (!this.outsideOfBoard(position) && !this.hasPiece(position)) {
+    if (this.validTargetSquare(position)) {
       if (position.x === 0 || position.x === 7) {
         moves.push(new Promotion(position));
       } else {
@@ -65,7 +65,7 @@ export class Pawn extends Piece {
         x: this.position.x + normalMoveset[0] * this.direction,
         y: this.position.y + normalMoveset[1]
       };
-      if (!this.hasPiece(position) && !this.hasPiece(front)) {
+      if (this.validTargetSquare(position) && !this.hasPiece(front)) {
         moves.push(new Move(position, true));
       }
     }

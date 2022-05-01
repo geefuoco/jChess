@@ -8,7 +8,7 @@
 }
 
 .cell img{
-  cursor: grabbing;
+  cursor: pointer;
 }
 
 .light{
