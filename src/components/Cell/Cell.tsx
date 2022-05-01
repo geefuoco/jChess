@@ -34,13 +34,16 @@ const Cell: React.FC<Props> = ({
   gameover
 }) => {
   const chessBoard = useContext(ChessBoardContext).chessBoard as ChessBoard;
-  const [{ isDragging }, drag, dragPreview] = useDrag(() => ({
-    type: "piece",
-    item: piece,
-    collect: (monitor) => ({
-      isDragging: monitor.isDragging()
-    })
-  }));
+  const [{ isDragging }, drag, dragPreview] = useDrag(
+    () => ({
+      type: "piece",
+      item: piece,
+      collect: (monitor) => ({
+        isDragging: monitor.isDragging()
+      })
+    }),
+    [piece, position]
+  );
 
   const handlePieceMove = (piece: Piece, position: Position) => {
     if (piece.getColor() === piece.board.getCurrentPlayer()) {
@@ -61,7 +64,7 @@ const Cell: React.FC<Props> = ({
 
   const canPieceMove = (piece: Piece, position: Position): boolean => {
     if (piece.getColor() === piece.board.getCurrentPlayer()) {
-      if (piece.canMove(position) && !piece.board.badMove(piece, position)) {
+      if (piece.canMove(position)) {
         return true;
       }
     }
@@ -77,7 +80,7 @@ const Cell: React.FC<Props> = ({
         handlePieceMove(piece, position);
       },
       canDrop: (item: PieceObject) => {
-        const piece = item.piece;
+        const { piece } = item;
         return canPieceMove(piece, position);
       },
       collect: (monitor: DropTargetMonitor) => ({
@@ -85,7 +88,7 @@ const Cell: React.FC<Props> = ({
         canDrop: monitor.canDrop()
       })
     }),
-    [position]
+    [piece, position]
   );
 
   const dropStyles =
