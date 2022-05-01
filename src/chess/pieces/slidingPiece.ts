@@ -31,17 +31,15 @@ export abstract class SlidingPiece extends Piece {
     moveSet: number[],
     moves: Move[]
   ) {
-    while (!this.outsideOfBoard(newPosition)) {
+    while (this.validTargetSquare(newPosition)) {
       if (this.hasEnemyPiece(newPosition)) {
         moves.push(this.createMove(newPosition));
         break;
-      } else if (!this.hasFriendlyPiece(newPosition)) {
+      } else {
         moves.push(this.createMove(newPosition));
         const rankOffset = moveSet[0] + newPosition.x;
         const fileOffset = moveSet[1] + newPosition.y;
         newPosition = { x: rankOffset, y: fileOffset };
-      } else {
-        break;
       }
     }
   }

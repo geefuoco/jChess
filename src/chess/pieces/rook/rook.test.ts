@@ -79,10 +79,8 @@ describe("Rook", () => {
   });
 
   it("should not be able to move if a friendly piece is there", () => {
-    const spy = jest.spyOn(rook, "updateLegalMoves");
     const r1 = new Rook(board, "black", { x: 4, y: 5 });
-    board.setSquare(r1.getPosition(), r1);
-    expect(spy).toBeCalled();
-    expect(rook.canMove({ x: 4, y: 5 })).toBeFalsy();
+    board.move(r1, r1.getPosition());
+    expect(rook.canMove({ x: 4, y: 4 })).toBeFalsy();
   });
 });

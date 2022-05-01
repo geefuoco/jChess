@@ -19,7 +19,6 @@ export abstract class Piece extends AbstractPieceMover {
   move(move: Move) {
     this.position = move.getGoalPosition();
     this.hasMoved = true;
-    this.updateLegalMoves();
   }
 
   getPosition(): Position {
@@ -54,10 +53,8 @@ export abstract class Piece extends AbstractPieceMover {
         x: moveSet[0] + this.position.x,
         y: moveSet[1] + this.position.y
       };
-      if (!this.outsideOfBoard(newPosition)) {
-        if (!this.hasFriendlyPiece(newPosition)) {
-          moves.push(this.createMove(newPosition));
-        }
+      if (this.validTargetSquare(newPosition)) {
+        moves.push(this.createMove(newPosition));
       }
     });
     return moves;
@@ -73,6 +70,10 @@ export abstract class Piece extends AbstractPieceMover {
 
   getAttackSquares(): Position[] {
     return this.legalMoves.map((move) => move.getGoalPosition());
+  }
+
+  validTargetSquare(position: Position): boolean {
+    return !this.outsideOfBoard(position) && !this.hasFriendlyPiece(position);
   }
 
   abstract getPieceCode(): string;
