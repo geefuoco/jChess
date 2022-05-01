@@ -1,4 +1,4 @@
-import { ChessBoard, pieceMap } from "../board/chessboard";
+import { ChessBoard } from "../board/chessboard";
 import { FenOptions } from "../interfaces/fenOptions";
 import { Position } from "../interfaces/position";
 import { Bishop } from "../pieces/bishop/bishop";
