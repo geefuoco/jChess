@@ -58,7 +58,7 @@ const Board: React.FC = () => {
 
   return (
     <>
-      {isGameover && <Gameover />}
+      {isGameover && <Gameover updateChessBoard={setBoard} />}
       <div
         data-testid="board"
         className="board"
