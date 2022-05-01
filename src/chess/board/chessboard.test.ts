@@ -6,10 +6,10 @@ describe("ChessBoard", () => {
   beforeEach(() => (board = new ChessBoard()));
 
   it("should move the piece to the correct position", () => {
-    const position = { x: 1, y: 2 };
-    const p = new Pawn(board, "black", position);
+    const position = { x: 6, y: 2 };
+    const p = new Pawn(board, "white", position);
     board.setSquare(position, p);
-    const newPos = { x: 2, y: 2 };
+    const newPos = { x: 5, y: 2 };
 
     board.move(p, newPos);
     expect(board.getSquare(newPos)).toBe(p);

@@ -82,7 +82,6 @@ export class ChessBoard {
 
   setSquare(position: Position, piece: Piece | null) {
     this.board[position.x][position.y] = piece;
-    this.update();
   }
 
   getPieces(): Piece[] {
@@ -116,7 +115,7 @@ export class ChessBoard {
         JSON.stringify(move.getGoalPosition()) == JSON.stringify(position)
     )[0];
     if (move) {
-      if (this.badMove(piece, position)) return;
+      if (this.moveEndangersKing(piece, position)) return;
       const oldPos = piece.getPosition();
       piece.move(move);
       this.setSquare(oldPos, null);
@@ -176,21 +175,6 @@ export class ChessBoard {
     this.swapPlayers();
   }
 
-  getAttackedSquares(color: Color): Dict {
-    const positions = this.getPieces()
-      .filter((piece) => piece.getColor() !== color)
-      .flatMap((piece) => {
-        return piece.getAttackSquares();
-      });
-    const map: Dict = {};
-    for (const pos of positions) {
-      if (!(JSON.stringify(pos) in map)) {
-        map[JSON.stringify(pos)] = true;
-      }
-    }
-    return map;
-  }
-
   subscribe(piece: Piece) {
     this.pieces.push(piece);
   }
@@ -246,29 +230,15 @@ export class ChessBoard {
     return null;
   }
 
-  isKingUnderAttack(color: Color): boolean {
-    const attackedSquares = this.getAttackedSquares(color);
-    const king = this.getKing(color);
-    return JSON.stringify(king?.getPosition()) in attackedSquares;
-  }
-
-  getKing(color: Color): King | null {
-    const king = this.pieces.filter(
-      (p) => p instanceof King && p.getColor() === color
-    )[0];
-    return (king as King) || null;
-  }
-
-  badMove(piece: Piece, position: Position): boolean {
+  moveEndangersKing(piece: Piece, position: Position): boolean {
     let bool = false;
 
-    //remember old values
     const oldPos = piece.getPosition();
     const otherPiece = this.getSquare(position);
     if (otherPiece) {
       this.unsubscribe(otherPiece);
     }
-    //make the move
+
     piece.setPosition(position);
     this.setSquare(oldPos, null);
     this.setSquare(position, piece);
@@ -277,7 +247,6 @@ export class ChessBoard {
       bool = true;
     }
 
-    //clean up
     piece.setPosition(oldPos);
     if (otherPiece) {
       this.setSquare(position, otherPiece);
@@ -287,14 +256,50 @@ export class ChessBoard {
     }
     this.setSquare(oldPos, piece);
     this.update();
-
     return bool;
+  }
+
+  isKingUnderAttack(color: Color): boolean {
+    const attackedSquares = this.getAttackedSquares(color);
+    const king = this.getKing(color);
+    return JSON.stringify(king?.getPosition()) in attackedSquares;
+  }
+
+  getAttackedSquares(color: Color): Dict {
+    const positions = this.getPieces()
+      .filter((piece) => piece.getColor() !== color)
+      .flatMap((piece) => {
+        return piece.getAttackSquares();
+      });
+    const map: Dict = {};
+    for (const pos of positions) {
+      if (!(JSON.stringify(pos) in map)) {
+        map[JSON.stringify(pos)] = true;
+      }
+    }
+    return map;
+  }
+
+  getKing(color: Color): King | null {
+    const king = this.pieces.filter(
+      (p) => p instanceof King && p.getColor() === color
+    )[0];
+    return (king as King) || null;
   }
 
   convertPositionToChessCoordinate(pos: Position): string {
     const letters = ["a", "b", "c", "d", "e", "f", "g", "h"];
     const { x, y } = pos;
     return `${letters[y]}${Math.abs(x - 8)}`;
+  }
+
+  convertChessCoordinateToPosition(coord: string): Position | null {
+    if (coord === "-") {
+      return null;
+    }
+    const letters = ["a", "b", "c", "d", "e", "f", "g", "h"];
+    const [x, y] = coord.split("");
+    return { x: Number(y + 6), y: letters.findIndex((i) => i == x) };
   }
 
   gameover(): boolean {
@@ -317,7 +322,7 @@ export class ChessBoard {
       const legal = p.getLegalMoves();
 
       legal.forEach((mo) => {
-        if (!this.badMove(p, mo.getGoalPosition())) {
+        if (!this.moveEndangersKing(p, mo.getGoalPosition())) {
           moves.push(mo);
         }
       });
