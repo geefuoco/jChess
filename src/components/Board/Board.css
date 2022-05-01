@@ -1,3 +1,4 @@
+
 .board-row{
   display: flex;
 }
@@ -10,23 +11,13 @@
 @media screen and (max-width: 768px) {
   .piece{
     aspect-ratio: 1/1;
-    width:65px;
-    height: 65px;
+    width:10vmin;
+    height: 10vmin;
   }
-  
-  .board-row{
-    width: 100vw;
-  }
-}
 
-@media screen and (max-width: 500px) {
-  .piece{
-    aspect-ratio: 1/1;
-    width:26px;
-    height: 26px;
-  }
-  
   .board-row{
     width: 100vw;
+    justify-content: center;
   }
+  
 }
