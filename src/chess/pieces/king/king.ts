@@ -22,6 +22,7 @@ export class King extends Piece {
     super(board, color, position);
     this.inCheck = false;
     this.legalMoves = this.generateMoveSet();
+    this.moveMap = this.getMoveMap();
   }
 
   generateMoveSet(): Move[] {

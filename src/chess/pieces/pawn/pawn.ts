@@ -20,6 +20,7 @@ export class Pawn extends Piece {
     this.passable = false;
     this.direction = this.color === "white" ? -1 : 1;
     this.legalMoves = this.generateMoveSet();
+    this.moveMap = this.getMoveMap();
   }
 
   setPassable(bool: boolean) {
@@ -65,7 +66,11 @@ export class Pawn extends Piece {
         x: this.position.x + normalMoveset[0] * this.direction,
         y: this.position.y + normalMoveset[1]
       };
-      if (this.validTargetSquare(position) && !this.hasPiece(front)) {
+      if (
+        this.validTargetSquare(position) &&
+        !this.hasPiece(front) &&
+        !this.hasPiece(position)
+      ) {
         moves.push(new Move(position, true));
       }
     }

@@ -7,12 +7,14 @@ export abstract class Piece extends AbstractPieceMover {
   protected position: Position;
   protected hasMoved: boolean;
   protected legalMoves: Move[];
+  protected moveMap: { [key: string]: boolean };
 
   constructor(board: ChessBoard, color: Color, position: Position) {
     super(board, color);
     this.position = position;
     this.hasMoved = false;
     this.legalMoves = [];
+    this.moveMap = {};
     board.subscribe(this);
   }
 
@@ -39,6 +41,7 @@ export abstract class Piece extends AbstractPieceMover {
 
   updateLegalMoves() {
     this.legalMoves = this.generateMoveSet();
+    this.moveMap = this.getMoveMap();
   }
 
   generateMoveSet(): Move[] {
@@ -54,22 +57,29 @@ export abstract class Piece extends AbstractPieceMover {
         y: moveSet[1] + this.position.y
       };
       if (this.validTargetSquare(newPosition)) {
-        moves.push(this.createMove(newPosition));
+        const move = this.createMove(newPosition);
+        moves.push(move);
       }
     });
     return moves;
   }
 
   canMove(position: Position): boolean {
-    return (
-      this.legalMoves
-        .map((move) => JSON.stringify(move.getGoalPosition()))
-        .find((v) => v === JSON.stringify(position)) !== undefined
-    );
+    return JSON.stringify(position) in this.moveMap;
   }
 
   getAttackSquares(): Position[] {
     return this.legalMoves.map((move) => move.getGoalPosition());
+  }
+
+  getMoveMap(): { [key: string]: boolean } {
+    const map: { [key: string]: boolean } = {};
+    for (const pos of this.legalMoves.map((m) => m.getGoalPosition())) {
+      if (!(JSON.stringify(pos) in map)) {
+        map[JSON.stringify(pos)] = true;
+      }
+    }
+    return map;
   }
 
   validTargetSquare(position: Position): boolean {

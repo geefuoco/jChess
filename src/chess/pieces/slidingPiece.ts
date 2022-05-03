@@ -7,6 +7,7 @@ export abstract class SlidingPiece extends Piece {
   constructor(board: ChessBoard, color: Color, position: Position) {
     super(board, color, position);
     this.legalMoves = this.generateMoveSet();
+    this.moveMap = this.getMoveMap();
   }
 
   generateMoveSet(): Move[] {
