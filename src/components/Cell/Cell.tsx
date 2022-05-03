@@ -64,7 +64,10 @@ const Cell: React.FC<Props> = ({
 
   const canPieceMove = (piece: Piece, position: Position): boolean => {
     if (piece.getColor() === piece.board.getCurrentPlayer()) {
-      if (piece.canMove(position)) {
+      if (
+        piece.canMove(position) &&
+        !piece.board.moveEndangersKing(piece, position)
+      ) {
         return true;
       }
     }

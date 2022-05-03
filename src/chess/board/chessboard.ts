@@ -211,6 +211,22 @@ export class ChessBoard {
     return this.isKingUnderAttack("white") || this.isKingUnderAttack("black");
   }
 
+  testCheck(color: Color): boolean {
+    return this.pieces.some((p) => {
+      if (!(p instanceof King)) {
+        const moves = p.generateMoveSet();
+        return moves.some((m) => {
+          if (m instanceof Capture || m instanceof Promotion) {
+            const piece = m.getAttackedPiece();
+            if (piece instanceof King && piece.getColor() === color) {
+              return true;
+            }
+          }
+        });
+      }
+    });
+  }
+
   checkmate(): boolean {
     if (this.targetKing) {
       const moves: Move[] = this.getLegalMovesForColor(
@@ -242,11 +258,7 @@ export class ChessBoard {
     piece.setPosition(position);
     this.setSquare(oldPos, null);
     this.setSquare(position, piece);
-    this.update();
-    if (this.isKingUnderAttack(piece.getColor())) {
-      bool = true;
-    }
-
+    bool = this.testCheck(piece.getColor());
     piece.setPosition(oldPos);
     if (otherPiece) {
       this.setSquare(position, otherPiece);
@@ -255,7 +267,6 @@ export class ChessBoard {
       this.setSquare(position, null);
     }
     this.setSquare(oldPos, piece);
-    this.update();
     return bool;
   }
 
