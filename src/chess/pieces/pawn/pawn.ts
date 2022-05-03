@@ -48,7 +48,7 @@ export class Pawn extends Piece {
       y: this.position.y + normalMoveset[1]
     };
 
-    if (this.validTargetSquare(position)) {
+    if (this.validTargetSquare(position) && !this.hasPiece(position)) {
       if (position.x === 0 || position.x === 7) {
         moves.push(new Promotion(position));
       } else {
