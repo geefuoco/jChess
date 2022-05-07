@@ -1,4 +1,10 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, {
+  useState,
+  useContext,
+  useEffect,
+  SetStateAction,
+  Dispatch
+} from "react";
 import "./Board.css";
 import Cell from "../Cell/Cell";
 import { ChessBoard, pieceMap } from "../../chess/board/chessboard";
@@ -9,7 +15,12 @@ import { Fen } from "../../chess/fen/fen";
 import FenInput from "../FenInput/FenInput";
 import Gameover from "../Gameover/Gameover";
 
-const Board: React.FC = () => {
+interface Props {
+  updateMoveList: Dispatch<SetStateAction<string[] | null>>;
+  list: string[] | null;
+}
+
+const Board: React.FC<Props> = ({ updateMoveList, list }) => {
   const chessBoard = useContext(ChessBoardContext).chessBoard as ChessBoard;
   const [board, setBoard] = useState(chessBoard.getBoard());
   const [promotablePiece, setPromotablePiece] = useState<Piece | null>(null);
@@ -40,6 +51,8 @@ const Board: React.FC = () => {
             setBoard={setBoard}
             setPromotablePiece={setPromotablePiece}
             gameover={isGameover}
+            moveList={list}
+            updateMoveList={updateMoveList}
           />
         );
       });
@@ -58,7 +71,9 @@ const Board: React.FC = () => {
 
   return (
     <>
-      {isGameover && <Gameover updateChessBoard={setBoard} />}
+      {isGameover && (
+        <Gameover updateChessBoard={setBoard} updateMoveList={updateMoveList} />
+      )}
       <div
         data-testid="board"
         className="board"

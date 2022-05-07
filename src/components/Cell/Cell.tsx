@@ -23,6 +23,8 @@ interface Props {
   setBoard: Dispatch<SetStateAction<(Piece | null)[][]>>;
   setPromotablePiece: Dispatch<SetStateAction<Piece | null>>;
   gameover: boolean;
+  moveList: string[] | null;
+  updateMoveList: Dispatch<SetStateAction<string[] | null>>;
 }
 
 const Cell: React.FC<Props> = ({
@@ -31,7 +33,9 @@ const Cell: React.FC<Props> = ({
   position,
   setBoard,
   setPromotablePiece,
-  gameover
+  gameover,
+  updateMoveList,
+  moveList
 }) => {
   const chessBoard = useContext(ChessBoardContext).chessBoard as ChessBoard;
   const [{ isDragging }, drag, dragPreview] = useDrag(
@@ -56,6 +60,9 @@ const Cell: React.FC<Props> = ({
           setPromotablePiece(piece);
         }
         setBoard([...chessBoard.getBoard()]);
+        const coordinate =
+          piece.board.convertPositionToChessCoordinate(position);
+        updateMoveList([...(moveList ?? []), coordinate]);
       } catch (error) {
         console.error(error);
       }

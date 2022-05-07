@@ -1,0 +1,30 @@
+.moves-container{
+  height: 400px;
+  width: 300px;
+  background-color: #bbbbbb;
+}
+
+.moves-container-wrapper{
+  flex-basis: 20%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.moves-title{
+  text-align: center;
+  color: #000000;
+}
+
+.move-text{
+  color: #1D1D1D;
+  text-align: center;
+  font-size: 14px;
+  flex-basis: 50%;
+  padding: 6px;
+}
+
+.move-list-container{
+  display: flex;
+  flex-wrap: wrap;
+}

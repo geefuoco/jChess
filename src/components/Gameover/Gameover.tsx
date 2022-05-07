@@ -7,9 +7,10 @@ import "./Gameover.css";
 
 interface Props {
   updateChessBoard: Dispatch<SetStateAction<(Piece | null)[][]>>;
+  updateMoveList: Dispatch<SetStateAction<string[] | null>>;
 }
 
-const Gameover: React.FC<Props> = ({ updateChessBoard }) => {
+const Gameover: React.FC<Props> = ({ updateChessBoard, updateMoveList }) => {
   const { chessBoard, setChessBoard } = useContext(ChessBoardContext);
   const newBoard = new ChessBoard();
 
@@ -19,6 +20,7 @@ const Gameover: React.FC<Props> = ({ updateChessBoard }) => {
       Fen.setBoardFromFen(newBoard, fen);
       setChessBoard(newBoard);
       updateChessBoard(newBoard.getBoard());
+      updateMoveList([]);
     }
   };
 
