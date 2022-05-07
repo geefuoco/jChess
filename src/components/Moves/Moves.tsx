@@ -1,11 +1,10 @@
 import React from "react";
+import { useMoves } from "../MoveContext";
 import "./Moves.css";
 
-interface Props {
-  list: string[] | null;
-}
+const Moves: React.FC = () => {
+  const list = useMoves().moves;
 
-const Moves: React.FC<Props> = ({ list }) => {
   return (
     <div className="moves-container">
       <h2 className="moves-title">Moves</h2>

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Board from "./Board/Board";
 import { ChessBoardContext } from "./ChessboardContext";
+import { MoveContext } from "./MoveContext";
 import { Fen } from "../chess/fen/fen";
 import { ChessBoard } from "../chess/board/chessboard";
 import Moves from "./Moves/Moves";
@@ -22,18 +23,25 @@ const App: React.FC = () => {
     setBoard(board);
   };
   const [moveList, setMoveList] = useState<string[] | null>(null);
+  const updateMoveList = (moveList: string[]) => {
+    setMoveList(moveList);
+  };
 
   return (
     <ChessBoardContext.Provider value={{ chessBoard: board, setChessBoard }}>
-      <div className="app">
-        <div className="board-wrapper">
-          <h1>jChess</h1>
-          <Board updateMoveList={setMoveList} list={moveList} />
+      <MoveContext.Provider
+        value={{ moves: moveList, setMoves: updateMoveList }}
+      >
+        <div className="app">
+          <div className="board-wrapper">
+            <h1>jChess</h1>
+            <Board />
+          </div>
+          <div className="moves-container-wrapper">
+            <Moves />
+          </div>
         </div>
-        <div className="moves-container-wrapper">
-          <Moves list={moveList} />
-        </div>
-      </div>
+      </MoveContext.Provider>
     </ChessBoardContext.Provider>
   );
 };

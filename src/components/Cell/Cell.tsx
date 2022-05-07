@@ -1,15 +1,16 @@
-import React, { Dispatch, SetStateAction, useContext } from "react";
+import React, { Dispatch, SetStateAction } from "react";
 import {
   useDrag,
   useDrop,
   DragPreviewImage,
   DropTargetMonitor
 } from "react-dnd";
-import { ChessBoardContext } from "../ChessboardContext";
+import { useBoard } from "../ChessboardContext";
 import { Position } from "../../chess/interfaces/position";
 import { Piece } from "../../chess/pieces/piece";
 import "./Cell.css";
 import { ChessBoard } from "../../chess/board/chessboard";
+import { useMoves } from "../MoveContext";
 
 interface PieceObject {
   piece: Piece;
@@ -23,8 +24,6 @@ interface Props {
   setBoard: Dispatch<SetStateAction<(Piece | null)[][]>>;
   setPromotablePiece: Dispatch<SetStateAction<Piece | null>>;
   gameover: boolean;
-  moveList: string[] | null;
-  updateMoveList: Dispatch<SetStateAction<string[] | null>>;
 }
 
 const Cell: React.FC<Props> = ({
@@ -33,11 +32,12 @@ const Cell: React.FC<Props> = ({
   position,
   setBoard,
   setPromotablePiece,
-  gameover,
-  updateMoveList,
-  moveList
+  gameover
 }) => {
-  const chessBoard = useContext(ChessBoardContext).chessBoard as ChessBoard;
+  const chessBoard = useBoard().chessBoard as ChessBoard;
+  const updateMoveList = useMoves().setMoves;
+  const moveList = useMoves().moves as string[];
+
   const [{ isDragging }, drag, dragPreview] = useDrag(
     () => ({
       type: "piece",

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 
 interface IMoveContext {
   moves: string[] | null;
@@ -10,3 +10,5 @@ export const MoveContext = React.createContext<IMoveContext>({
   //eslint-disable-next-line
   setMoves: (updatedMoves: string[]) => {}
 });
+
+export const useMoves = () => useContext(MoveContext);

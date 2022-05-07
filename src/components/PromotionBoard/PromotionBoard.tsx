@@ -1,7 +1,7 @@
-import React, { Dispatch, SetStateAction, useContext, useState } from "react";
+import React, { Dispatch, SetStateAction, useState } from "react";
 import "./PromotionBoard.css";
 import { ChessBoard, pieceMap } from "../../chess/board/chessboard";
-import { ChessBoardContext } from "../ChessboardContext";
+import { useBoard } from "../ChessboardContext";
 import { Piece } from "../../chess/pieces/piece";
 
 interface Props {
@@ -15,7 +15,7 @@ const PromotionBoard: React.FC<Props> = ({
   color,
   setPromotablePiece
 }) => {
-  const chessBoard = useContext(ChessBoardContext).chessBoard as ChessBoard;
+  const chessBoard = useBoard().chessBoard as ChessBoard;
   const [show, setShow] = useState(true);
   const images =
     color === "white" ? ["Q", "R", "B", "N"] : ["q", "r", "b", "n"];

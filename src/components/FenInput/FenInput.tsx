@@ -1,14 +1,8 @@
-import React, {
-  Dispatch,
-  FormEvent,
-  SetStateAction,
-  useContext,
-  useRef
-} from "react";
+import React, { Dispatch, FormEvent, SetStateAction, useRef } from "react";
 import { ChessBoard } from "../../chess/board/chessboard";
 import { Fen } from "../../chess/fen/fen";
 import { Piece } from "../../chess/pieces/piece";
-import { ChessBoardContext } from "../ChessboardContext";
+import { useBoard } from "../ChessboardContext";
 import "./FenInput.css";
 
 interface Props {
@@ -18,7 +12,7 @@ interface Props {
 
 const FenInput: React.FC<Props> = ({ close, updateBoard }) => {
   const inref = useRef<HTMLInputElement>(null);
-  const { chessBoard, setChessBoard } = useContext(ChessBoardContext);
+  const { chessBoard, setChessBoard } = useBoard();
   const newBoard = new ChessBoard();
 
   const handleSubmit = (e: FormEvent) => {

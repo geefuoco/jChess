@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { ChessBoard } from "../chess/board/chessboard";
 
 interface IChessBoardContext {
@@ -11,3 +11,5 @@ export const ChessBoardContext = React.createContext<IChessBoardContext>({
   //eslint-disable-next-line
   setChessBoard: (chessBoard: ChessBoard) => {}
 });
+
+export const useBoard = () => useContext(ChessBoardContext);

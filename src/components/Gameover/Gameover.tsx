@@ -1,17 +1,18 @@
-import React, { Dispatch, SetStateAction, useContext } from "react";
+import React, { Dispatch, SetStateAction } from "react";
 import { ChessBoard } from "../../chess/board/chessboard";
 import { Fen } from "../../chess/fen/fen";
 import { Piece } from "../../chess/pieces/piece";
-import { ChessBoardContext } from "../ChessboardContext";
+import { useBoard } from "../ChessboardContext";
+import { useMoves } from "../MoveContext";
 import "./Gameover.css";
 
 interface Props {
   updateChessBoard: Dispatch<SetStateAction<(Piece | null)[][]>>;
-  updateMoveList: Dispatch<SetStateAction<string[] | null>>;
 }
 
-const Gameover: React.FC<Props> = ({ updateChessBoard, updateMoveList }) => {
-  const { chessBoard, setChessBoard } = useContext(ChessBoardContext);
+const Gameover: React.FC<Props> = ({ updateChessBoard }) => {
+  const { chessBoard, setChessBoard } = useBoard();
+  const updateMoveList = useMoves().setMoves;
   const newBoard = new ChessBoard();
 
   const handleClick = () => {
