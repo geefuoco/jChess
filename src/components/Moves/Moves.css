@@ -2,6 +2,7 @@
   height: 400px;
   width: 300px;
   background-color: #bbbbbb;
+  overflow: auto;
 }
 
 .moves-container-wrapper{

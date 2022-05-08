@@ -1,5 +1,6 @@
 import { King } from "./king";
 import { ChessBoard } from "../../board/chessboard";
+import { Queen } from "../queen/queen";
 
 describe("King", () => {
   let k: King;
@@ -25,5 +26,17 @@ describe("King", () => {
       { x: 4, y: 3 }
     ];
     expect(moves).toEqual(validMoves);
+  });
+
+  it("should not be able to move into check", () => {
+    const Q = new Queen(b, "white", { x: 2, y: 1 });
+    const q = new Queen(b, "black", { x: 4, y: 3 });
+    const Q2 = new Queen(b, "white", { x: 5, y: 3 });
+    b.setSquare(Q.getPosition(), Q);
+    b.setSquare(q.getPosition(), q);
+    b.setSquare(Q2.getPosition(), Q2);
+
+    expect(b.moveEndangersKing(k, { x: 2, y: 3 })).toBeTruthy();
+    expect(b.moveEndangersKing(q, { x: 4, y: 7 })).toBeTruthy();
   });
 });
