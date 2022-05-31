@@ -52,21 +52,45 @@ const Cell: React.FC<Props> = ({
   const handlePieceMove = (piece: Piece, position: Position) => {
     if (piece.getColor() === piece.board.getCurrentPlayer()) {
       try {
+        let moveNotation = getMoveNotation(piece, position);
         chessBoard.move(piece, position);
         if (
           piece.constructor.name === "Pawn" &&
           (piece.getPosition().x === 0 || piece.getPosition().x === 7)
         ) {
           setPromotablePiece(piece);
+          moveNotation += `=`;
         }
         setBoard([...chessBoard.getBoard()]);
-        const coordinate =
-          piece.board.convertPositionToChessCoordinate(position);
-        updateMoveList([...(moveList ?? []), coordinate]);
+
+        updateMoveList([...(moveList ?? []), moveNotation]);
       } catch (error) {
         console.error(error);
       }
     }
+  };
+
+  const getMoveNotation = (piece: Piece, position: Position): string => {
+    const captureMove = chessBoard.hasPiece(position);
+    const coord = chessBoard.convertPositionToChessCoordinate(position);
+    let moveNotation = "";
+    if (piece.constructor.name != "Pawn") {
+      moveNotation = `${piece.getPieceCode()}${coord}`;
+      if (captureMove) {
+        moveNotation = `${piece.getPieceCode()}x${coord}`;
+      }
+    } else {
+      if (captureMove) {
+        const pawnCoord = chessBoard
+          .convertPositionToChessCoordinate(piece.getPosition())
+          .charAt(0);
+        moveNotation = `${pawnCoord}x${coord}`;
+      } else {
+        moveNotation = coord;
+      }
+    }
+
+    return moveNotation;
   };
 
   const canPieceMove = (piece: Piece, position: Position): boolean => {

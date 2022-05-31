@@ -205,6 +205,7 @@ export class ChessBoard {
 
     this.setSquare(promotion.getPosition(), promotion);
     this.unsubscribe(piece);
+    return promotion;
   }
 
   check(): boolean {
