@@ -3,6 +3,7 @@ import { ChessBoard } from "../../chess/board/chessboard";
 import { Fen } from "../../chess/fen/fen";
 import { Piece } from "../../chess/pieces/piece";
 import { useBoard } from "../ChessboardContext";
+import { useGameHistory } from "../GameHistoryContext";
 import { useMoves } from "../MoveContext";
 import "./Gameover.css";
 
@@ -13,6 +14,7 @@ interface Props {
 const Gameover: React.FC<Props> = ({ updateChessBoard }) => {
   const { chessBoard, setChessBoard } = useBoard();
   const updateMoveList = useMoves().setMoves;
+  const updateGameHistory = useGameHistory().setHistory;
   const newBoard = new ChessBoard();
 
   const handleClick = () => {
@@ -22,6 +24,7 @@ const Gameover: React.FC<Props> = ({ updateChessBoard }) => {
       setChessBoard(newBoard);
       updateChessBoard(newBoard.getBoard());
       updateMoveList([]);
+      updateGameHistory([]);
     }
   };
 

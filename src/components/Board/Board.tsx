@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, SetStateAction } from "react";
 import "./Board.css";
 import Cell from "../Cell/Cell";
 import { ChessBoard, pieceMap } from "../../chess/board/chessboard";
@@ -9,9 +9,11 @@ import { Fen } from "../../chess/fen/fen";
 import FenInput from "../FenInput/FenInput";
 import Gameover from "../Gameover/Gameover";
 
-const Board: React.FC = () => {
+const Board: React.FC<{
+  board: (Piece | null)[][];
+  setBoard: React.Dispatch<SetStateAction<(Piece | null)[][]>>;
+}> = ({ board, setBoard }) => {
   const chessBoard = useBoard().chessBoard as ChessBoard;
-  const [board, setBoard] = useState(chessBoard.getBoard());
   const [promotablePiece, setPromotablePiece] = useState<Piece | null>(null);
   const [fenInput, setFenInput] = useState(false);
   const [isGameover, setIsGameover] = useState(false);
@@ -36,7 +38,7 @@ const Board: React.FC = () => {
             position={{ x: rowIdx, y: colIdx }}
             key={`${rowIdx}-${colIdx}-${
               piece ? piece.getPieceCode() : "empty"
-            }`}
+            }-${Date.now()}`}
             setBoard={setBoard}
             setPromotablePiece={setPromotablePiece}
             gameover={isGameover}

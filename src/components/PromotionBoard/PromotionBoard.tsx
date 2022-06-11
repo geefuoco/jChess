@@ -4,6 +4,8 @@ import { ChessBoard, pieceMap } from "../../chess/board/chessboard";
 import { useBoard } from "../ChessboardContext";
 import { Piece } from "../../chess/pieces/piece";
 import { useMoves } from "../MoveContext";
+import { useGameHistory } from "../GameHistoryContext";
+import { Fen } from "../../chess/fen/fen";
 
 interface Props {
   piece: Piece;
@@ -22,12 +24,19 @@ const PromotionBoard: React.FC<Props> = ({
     color === "white" ? ["Q", "R", "B", "N"] : ["q", "r", "b", "n"];
   const updateMoveList = useMoves().setMoves;
   const moveList = useMoves().moves as string[];
+  const gameHistory = useGameHistory().history as string[];
+  const updateGameHistory = useGameHistory().setHistory;
 
   const promotionMoveNotation = (piece: Piece) => {
     const code = piece.getPieceCode();
     let s = moveList[moveList.length - 1];
     s += code;
     updateMoveList([...moveList.slice(0, -1), s]);
+  };
+
+  const fixHistory = () => {
+    const f = Fen.getFenFromBoard(chessBoard);
+    updateGameHistory([...gameHistory.slice(0, -1), f]);
   };
 
   return (
@@ -42,6 +51,7 @@ const PromotionBoard: React.FC<Props> = ({
               setShow(false);
               setPromotablePiece(null);
               promotionMoveNotation(newPiece);
+              fixHistory();
             }}
           >
             <img src={pieceMap[images[0]]} alt="queen" />
@@ -54,6 +64,7 @@ const PromotionBoard: React.FC<Props> = ({
               setShow(false);
               setPromotablePiece(null);
               promotionMoveNotation(newPiece);
+              fixHistory();
             }}
           >
             <img src={pieceMap[images[1]]} alt="rook" />
@@ -66,6 +77,7 @@ const PromotionBoard: React.FC<Props> = ({
               setShow(false);
               setPromotablePiece(null);
               promotionMoveNotation(newPiece);
+              fixHistory();
             }}
           >
             <img src={pieceMap[images[2]]} alt="bishop" />
@@ -78,6 +90,7 @@ const PromotionBoard: React.FC<Props> = ({
               setShow(false);
               setPromotablePiece(null);
               promotionMoveNotation(newPiece);
+              fixHistory();
             }}
           >
             <img src={pieceMap[images[3]]} alt="knight" />

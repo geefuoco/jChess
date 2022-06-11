@@ -1,8 +1,9 @@
 .moves-container{
+  position: relative;
   height: 400px;
   width: 300px;
   background-color: #bbbbbb;
-  overflow: auto;
+  /* overflow: auto; */
 }
 
 .moves-container-wrapper{
@@ -15,6 +16,8 @@
 .moves-title{
   text-align: center;
   color: #000000;
+  background-color: #AAAAAA;
+  margin: 0;
 }
 
 .move-text{
@@ -25,7 +28,29 @@
   padding: 6px;
 }
 
+.moves-header{
+  background-color: #AAAAAA;
+  padding: .8rem;
+}
+
+.moves-container main{
+  height: 80%;
+  overflow: auto;
+}
+
 .move-list-container{
   display: flex;
   flex-wrap: wrap;
+}
+
+.moves-footer{
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  width: 100%;
+}
+
+.moves-footer button{
+  flex-grow: 1;
 }

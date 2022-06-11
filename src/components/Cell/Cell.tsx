@@ -11,6 +11,8 @@ import { Piece } from "../../chess/pieces/piece";
 import "./Cell.css";
 import { ChessBoard } from "../../chess/board/chessboard";
 import { useMoves } from "../MoveContext";
+import { useGameHistory } from "../GameHistoryContext";
+import { Fen } from "../../chess/fen/fen";
 
 interface PieceObject {
   piece: Piece;
@@ -37,6 +39,8 @@ const Cell: React.FC<Props> = ({
   const chessBoard = useBoard().chessBoard as ChessBoard;
   const updateMoveList = useMoves().setMoves;
   const moveList = useMoves().moves as string[];
+  const gameHistory = useGameHistory().history as string[];
+  const updateGameHistory = useGameHistory().setHistory;
 
   const [{ isDragging }, drag, dragPreview] = useDrag(
     () => ({
@@ -64,6 +68,8 @@ const Cell: React.FC<Props> = ({
         setBoard([...chessBoard.getBoard()]);
 
         updateMoveList([...(moveList ?? []), moveNotation]);
+        const fen = Fen.getFenFromBoard(chessBoard);
+        updateGameHistory([...gameHistory, fen]);
       } catch (error) {
         console.error(error);
       }
