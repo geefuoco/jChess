@@ -1,3 +1,4 @@
+import { Position } from "../interfaces/position";
 import { Pawn } from "../pieces/pawn/pawn";
 import { ChessBoard } from "./chessboard";
 
@@ -14,5 +15,12 @@ describe("ChessBoard", () => {
     board.move(p, newPos);
     expect(board.getSquare(newPos)).toBe(p);
     expect(board.getSquare(position)).toBeNull();
+  });
+
+  it("should convert chess notation to position notation", () => {
+    const p = "e4";
+    const { x, y } = board.convertChessCoordinateToPosition(p) as Position;
+    expect(x).toBe(4);
+    expect(y).toBe(4);
   });
 });

@@ -311,7 +311,7 @@ export class ChessBoard {
     }
     const letters = ["a", "b", "c", "d", "e", "f", "g", "h"];
     const [x, y] = coord.split("");
-    return { x: Number(y + 6), y: letters.findIndex((i) => i == x) };
+    return { x: Math.abs(Number(y) - 8), y: letters.findIndex((i) => i == x) };
   }
 
   gameover(): boolean {
