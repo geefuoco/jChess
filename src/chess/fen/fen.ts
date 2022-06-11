@@ -40,7 +40,10 @@ export class Fen {
   }
 
   static from(str: string): Fen | undefined {
-    if (!Fen.validFenString(str)) return;
+    if (!Fen.validFenString(str)) {
+      console.error("Invalid FEN string");
+      return;
+    }
     const [pieces, activeColor, castling, enPassent, halfMove, fullMove] =
       str.split(" ");
     return new Fen({
@@ -162,7 +165,7 @@ export class Fen {
 
   static validFenString(fen: string): boolean {
     const fenRegex =
-      /\s*([rnbqkpRNBQKP1-8]+\/){7}([rnbqkpRNBQKP1-8]+)\s[bw-]\s(([a-hkqA-HKQ]{1,4})|(-))\s(([a-h][36])|(-))\s\d+\s\d+\s*/;
+      /\s*([rnbqkpRNBQKP1-8]+\/){7}([rnbqkpRNBQKP1-8]+)\s[bw-]\s(([kqKQ]{1,4})|(-))\s(([a-h][1-8])|(-))\s\d+\s\d+\s*/;
     const result = fen.match(fenRegex);
     return result && result.length > 0 ? true : false;
   }

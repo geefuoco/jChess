@@ -18,7 +18,9 @@ describe("Fen", () => {
 
   it("should be a valid fen string", () => {
     const fen = f.getFen();
+    const test = "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e4 1 2";
     expect(Fen.validFenString(fen)).toBeTruthy();
+    expect(Fen.validFenString(test)).toBeTruthy();
     expect(Fen.validFenString("hello")).toBeFalsy();
   });
 
@@ -40,5 +42,11 @@ describe("Fen", () => {
   it("should get the proper fen string from the board", () => {
     const fen = Fen.getFenFromBoard(board);
     expect(Fen.validFenString(fen)).toBeTruthy();
+  });
+
+  it("should create a proper fen object from a fen string", () => {
+    const test = "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e4 1 2";
+    const f = Fen.from(test) as Fen;
+    expect(f.enPassent).toBe("e4");
   });
 });
