@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { ChessBoard } from "../../chess/board/chessboard";
 import { Fen } from "../../chess/fen/fen";
 import { Piece } from "../../chess/pieces/piece";
