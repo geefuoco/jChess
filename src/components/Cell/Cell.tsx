@@ -8,6 +8,7 @@ import {
 import { useBoard } from "../ChessboardContext";
 import { Position } from "../../chess/interfaces/position";
 import { Piece } from "../../chess/pieces/piece";
+import { Pawn } from "../../chess/pieces/pawn/pawn";
 import "./Cell.css";
 import { ChessBoard } from "../../chess/board/chessboard";
 import { useMoves } from "../MoveContext";
@@ -59,7 +60,7 @@ const Cell: React.FC<Props> = ({
         let moveNotation = getMoveNotation(piece, position);
         chessBoard.move(piece, position);
         if (
-          piece.constructor.name === "Pawn" &&
+          piece instanceof Pawn &&
           (piece.getPosition().x === 0 || piece.getPosition().x === 7)
         ) {
           setPromotablePiece(piece);
@@ -80,7 +81,7 @@ const Cell: React.FC<Props> = ({
     const captureMove = chessBoard.hasPiece(position);
     const coord = chessBoard.convertPositionToChessCoordinate(position);
     let moveNotation = "";
-    if (piece.constructor.name != "Pawn") {
+    if (!(piece instanceof Pawn)) {
       moveNotation = `${piece.getPieceCode()}${coord}`;
       if (captureMove) {
         moveNotation = `${piece.getPieceCode()}x${coord}`;

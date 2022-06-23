@@ -80,7 +80,7 @@ export class King extends Piece {
   }
 
   canCastle(rook: Piece): boolean {
-    if (rook.constructor.name !== "Rook") {
+    if (!(rook instanceof Rook)) {
       return false;
     }
     return !this.inCheck && !this.hasMoved && !rook.getHasMoved();
