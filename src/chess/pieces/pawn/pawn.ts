@@ -57,7 +57,7 @@ export class Pawn extends Piece {
       }
     }
 
-    if (!this.hasMoved) {
+    if (!this.hasMoved && this.position.x === 1 || this.position.x === 6) {
       position = {
         x: this.position.x + specialMoveset[0] * this.direction,
         y: this.position.y + specialMoveset[1]
